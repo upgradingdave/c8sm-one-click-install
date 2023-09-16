@@ -1,0 +1,1510 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="cbae99f" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.3.0" camunda:diagramRelationId="10b30867-3b86-48a9-8926-13827058009d">
+  <bpmn:process id="Process_installCamunda" name="C8SM - Install Camunda" isExecutable="true">
+    <bpmn:extensionElements>
+      <zeebe:userTaskForm id="userTaskForm_2acniie">{
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.3.0",
+  "exporter": {
+    "name": "Camunda Web Modeler",
+    "version": "2681830"
+  },
+  "schemaVersion": 10,
+  "components": [
+    {
+      "text": "# Installation Form",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_0f9vj0o",
+        "columns": null
+      },
+      "id": "Field_1xu813w"
+    },
+    {
+      "text": "## Google Cloud Authentication\n",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_1jah72q",
+        "columns": null
+      },
+      "id": "Field_0sgnb5p"
+    },
+    {
+      "values": [
+        {
+          "label": "Access / Refresh Token",
+          "value": "accessToken"
+        },
+        {
+          "label": "Authorization Code",
+          "value": "authCode"
+        }
+      ],
+      "label": "Type of Authentication",
+      "type": "select",
+      "layout": {
+        "row": "Row_04dvbl2",
+        "columns": null
+      },
+      "id": "Field_1s0vwfu",
+      "key": "authType",
+      "defaultValue": "accessToken",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "text": "#### Click &lt;a target=\"_gcpSignin\" href=\"https://accounts.google.com/o/oauth2/v2/auth?client_id=291005901394-60d88q0qhsopc4rmj817oldolqer8v1c.apps.googleusercontent.com&amp;redirect_uri=urn:ietf:wg:oauth:2.0:oob&amp;response_type=code&amp;scope=https://www.googleapis.com/auth/cloud-platform\"&gt;HERE&lt;/a&gt; to sign into Google\nThis app will make API requests to Google Cloud on your behalf. After you sign in, choose **Allow**. Finally, copy and paste the **authorization code** below.\n",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_1uq0oz8",
+        "columns": null
+      },
+      "id": "Field_12k47q4",
+      "conditional": {
+        "hide": "=authType != \"authCode\""
+      }
+    },
+    {
+      "label": "Authorization Code",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1v27xno",
+        "columns": null
+      },
+      "id": "Field_065cfyb",
+      "key": "authorizationCode",
+      "description": "Copy and paste the Authorization Code you obtained after signing in to Google ",
+      "conditional": {
+        "hide": "=authType != \"authCode\""
+      },
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Access Token",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1lgewya",
+        "columns": null
+      },
+      "id": "Field_0tjhgp2",
+      "key": "accessToken",
+      "defaultValue": "secrets.GOOGLE_ACCESS_TOKEN",
+      "validate": {
+        "required": true
+      },
+      "description": "The access token linked to your Google account",
+      "conditional": {
+        "hide": "=authType != \"accessToken\""
+      }
+    },
+    {
+      "label": "Refresh Token",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0bfy04z",
+        "columns": null
+      },
+      "id": "Field_0uxu86c",
+      "key": "refreshToken",
+      "defaultValue": "secrets.GOOGLE_REFRESH_TOKEN",
+      "validate": {
+        "required": true
+      },
+      "description": "The refresh token to stay authenticated longer",
+      "conditional": {
+        "hide": "=authType != \"accessToken\""
+      }
+    },
+    {
+      "text": "## Cluster Configuration",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_1aqcbdy",
+        "columns": null
+      },
+      "id": "Field_17g5991"
+    },
+    {
+      "label": "Project ID",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1rqlgz7",
+        "columns": null
+      },
+      "id": "Field_0u5xkp4",
+      "key": "projectId",
+      "defaultValue": "camunda-researchanddevelopment",
+      "description": "The Google projectId in which you want to create your cluster",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Cluster ID",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0vyp79j",
+        "columns": null
+      },
+      "id": "Field_0pwn0mk",
+      "key": "clusterId",
+      "description": "The name of your cluster. Should not contain any space. Example: my-cluster-name. If DNS Label below is not set, then this will be used as part of the domain name for your environment",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Cluster Description",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1g1nuj8",
+        "columns": null
+      },
+      "id": "Field_0nigy0w",
+      "key": "clusterDescription",
+      "defaultValue": "One click C8SM Environment",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Your Email address",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1cw7ko9",
+        "columns": 8
+      },
+      "id": "Field_13osie9",
+      "key": "emailAddress",
+      "description": "Enter your email if you'd like to be notified when the cluster is ready",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "30 Minutes",
+          "value": "PT30M"
+        },
+        {
+          "label": "1 Hour",
+          "value": "PT1H"
+        },
+        {
+          "label": "2 Hours",
+          "value": "PT2H"
+        },
+        {
+          "label": "4 Hours",
+          "value": "PT4H"
+        },
+        {
+          "label": "8 Hours",
+          "value": "PT8H"
+        },
+        {
+          "label": "24 Hours",
+          "value": "PT24H"
+        },
+        {
+          "label": "48 Hours",
+          "value": "PT48H"
+        }
+      ],
+      "label": "How Long Do you Need the cluster?",
+      "type": "select",
+      "layout": {
+        "row": "Row_1cw7ko9",
+        "columns": null
+      },
+      "id": "Field_0rr6ttr",
+      "key": "clusterTimeout",
+      "description": "The cluster will be deleted after this duration",
+      "defaultValue": "PT4H",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "Central US",
+          "value": "us-central1-a"
+        },
+        {
+          "label": "Southwest Europe",
+          "value": "europe-southwest1-a"
+        }
+      ],
+      "label": "Zone",
+      "type": "select",
+      "layout": {
+        "row": "Row_0oofz41",
+        "columns": null
+      },
+      "id": "Field_1g6gk77",
+      "key": "zoneId",
+      "description": "Select one of the available geographic zone to host your cluster",
+      "validate": {
+        "required": true
+      },
+      "defaultValue": "us-central1-a"
+    },
+    {
+      "values": [
+        {
+          "label": " n2-standard-16",
+          "value": " n2-standard-16"
+        }
+      ],
+      "label": "Machine Type",
+      "type": "select",
+      "layout": {
+        "row": "Row_0oofz41",
+        "columns": null
+      },
+      "id": "Field_1woc8g1",
+      "key": "machineType",
+      "defaultValue": " n2-standard-16",
+      "validate": {
+        "required": true
+      },
+      "description": "Select the type of machine you want to host your cluster. This will impact the performance of your clsuter but also the costs"
+    },
+    {
+      "text": "## Network",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_0tzqt27",
+        "columns": null
+      },
+      "id": "Field_1sxanpp"
+    },
+    {
+      "values": [
+        {
+          "label": "Yes",
+          "value": "true"
+        },
+        {
+          "label": "No Ingress (use port forwarding)",
+          "value": "false"
+        }
+      ],
+      "label": "Setup Combined Ingress?",
+      "type": "select",
+      "layout": {
+        "row": "Row_0s7qgnc",
+        "columns": 12
+      },
+      "id": "Field_1covcjn",
+      "key": "ingressEnabled",
+      "defaultValue": "true",
+      "validate": {
+        "required": true
+      },
+      "description": "Do you want to reach the application via an web address (Ingress) or locally on your machine (port forwarding)?"
+    },
+    {
+      "label": "Base Domain Name",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1lqlnv4",
+        "columns": 16
+      },
+      "id": "Field_0duw935",
+      "key": "baseDomainName",
+      "defaultValue": "gke.c8sm.com",
+      "validate": {
+        "required": true
+      },
+      "conditional": {
+        "hide": "=ingressEnabled = \"false\""
+      },
+      "description": "If you selected Ingress, to which web address should the traffic be redirected?"
+    },
+    {
+      "label": "DNS Label",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1ev637p",
+        "columns": null
+      },
+      "id": "Field_11ir0ad",
+      "key": "dnsLabel",
+      "description": "Fully qualified domain name is &lt;DNS Label&gt;.&lt;Base Domain Name&gt;. If this field is blank, then Cluster Id will be used as DNS Label"
+    },
+    {
+      "values": [
+        {
+          "label": "Yes",
+          "value": "true"
+        },
+        {
+          "label": "No",
+          "value": "false"
+        }
+      ],
+      "label": "Create DNS A Record?",
+      "type": "select",
+      "layout": {
+        "row": "Row_13a1d7n",
+        "columns": null
+      },
+      "id": "Field_1wxr26w",
+      "key": "createDNSRecord",
+      "description": "If true, then a new DNS A Record is created inside a Google Cloud DNS managed zone",
+      "defaultValue": "true",
+      "validate": {
+        "required": true
+      },
+      "conditional": {
+        "hide": "=ingressEnabled = \"false\""
+      }
+    },
+    {
+      "label": "Google Cloud DNS Managed Zone",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_13a1d7n",
+        "columns": null
+      },
+      "id": "Field_0xytzxx",
+      "key": "dnsManagedZone",
+      "defaultValue": "c8sm",
+      "validate": {
+        "required": true
+      },
+      "conditional": {
+        "hide": "=ingressEnabled = \"false\" or createDNSRecord = \"false\""
+      }
+    },
+    {
+      "text": "Full Domain Name: {{clusterName}}.ip-address.{{baseDomainName}}",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_1clps7z",
+        "columns": null
+      },
+      "id": "Field_080kiu8",
+      "conditional": {
+        "hide": "=ingressEnabled = \"false\""
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "No - use http only (no tls and no certificates)",
+          "value": "false"
+        },
+        {
+          "label": "Yes - use https over tls and generate certs",
+          "value": "true"
+        }
+      ],
+      "label": "Use https and tls?",
+      "type": "select",
+      "layout": {
+        "row": "Row_17uwtne",
+        "columns": null
+      },
+      "id": "Field_0z4jmca",
+      "key": "tlsEnabled",
+      "description": "Do you want to use tls certificates and host over https?",
+      "validate": {
+        "required": true
+      },
+      "defaultValue": "true",
+      "conditional": {
+        "hide": "=ingressEnabled = \"false\""
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "Lets Encrypt Prod",
+          "value": "prod"
+        },
+        {
+          "label": "Lets Encrypt Stage",
+          "value": "stage"
+        }
+      ],
+      "label": "Configure Lets Encrypt",
+      "type": "select",
+      "layout": {
+        "row": "Row_10du83u",
+        "columns": null
+      },
+      "id": "Field_04r365t",
+      "key": "letsencryptMode",
+      "conditional": {
+        "hide": "=tlsEnabled = \"false\""
+      },
+      "defaultValue": "prod",
+      "validate": {
+        "required": true
+      },
+      "description": "Which environment do you want to secure: Stage or Production?"
+    },
+    {
+      "text": "## Camunda",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_08cu9zf",
+        "columns": null
+      },
+      "id": "Field_08jrpu6"
+    },
+    {
+      "values": [
+        {
+          "label": "8.3.0-alpha4",
+          "value": "8.3.0-alpha4"
+        },
+        {
+          "label": "8.2.11",
+          "value": "8.2.11"
+        },
+        {
+          "label": "latest",
+          "value": "latest"
+        }
+      ],
+      "label": "Version",
+      "type": "select",
+      "layout": {
+        "row": "Row_0kesgeu",
+        "columns": 7
+      },
+      "id": "Field_0cf07jx",
+      "key": "version",
+      "defaultValue": "latest",
+      "validate": {
+        "required": true
+      },
+      "description": "The version of Camunda Platform"
+    },
+    {
+      "values": [
+        {
+          "label": "Yes - setup Identity and Authentication",
+          "value": "true"
+        },
+        {
+          "label": "No - Webapps will use basic authentication",
+          "value": "false"
+        }
+      ],
+      "label": "Setup Identity Authentication?",
+      "type": "select",
+      "layout": {
+        "row": "Row_0jyzn0h",
+        "columns": null
+      },
+      "id": "Field_1rvoaev",
+      "key": "authEnabled",
+      "validate": {
+        "required": true
+      },
+      "defaultValue": "true",
+      "description": "Would you like to set up security protocols on your installation?"
+    },
+    {
+      "label": "Total Zeebe Brokers",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_10dq97h",
+        "columns": 5
+      },
+      "id": "Field_12fo6mh",
+      "key": "clusterSize",
+      "defaultValue": "1",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Partition Count",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_10dq97h",
+        "columns": 5
+      },
+      "id": "Field_0540o7q",
+      "key": "field_06ydmh1",
+      "defaultValue": "1",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Replication Factor",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_10dq97h",
+        "columns": null
+      },
+      "id": "Field_1j5axn0",
+      "key": "field_1e5cc8k",
+      "validate": {
+        "required": true
+      },
+      "defaultValue": "1"
+    },
+    {
+      "values": [
+        {
+          "label": "Yes",
+          "value": "true"
+        },
+        {
+          "label": "No",
+          "value": "false"
+        }
+      ],
+      "label": "Install Tasklist?",
+      "type": "select",
+      "layout": {
+        "row": "Row_0pzux6b",
+        "columns": 8
+      },
+      "id": "Field_1db7hg4",
+      "key": "tasklistEnabled",
+      "validate": {
+        "required": true
+      },
+      "defaultValue": "true"
+    },
+    {
+      "label": "Tasklist Context Path",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0pzux6b",
+        "columns": null
+      },
+      "id": "Field_0ypehev",
+      "key": "field_0z7k6rk",
+      "conditional": {
+        "hide": "=ingressEnabled = \"false\" or tasklistEnabled = \"false\""
+      },
+      "validate": {
+        "required": true
+      },
+      "defaultValue": "/tasklist"
+    },
+    {
+      "values": [
+        {
+          "label": "Yes",
+          "value": "true"
+        },
+        {
+          "label": "No",
+          "value": "false"
+        }
+      ],
+      "label": "Install Operate?",
+      "type": "select",
+      "layout": {
+        "row": "Row_1f427rp",
+        "columns": 8
+      },
+      "id": "Field_1rkbvb5",
+      "key": "operateEnabled",
+      "defaultValue": "true",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Operate Context Path",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1f427rp",
+        "columns": null
+      },
+      "id": "Field_1yb11cf",
+      "key": "operateContextPath",
+      "defaultValue": "/operate",
+      "validate": {
+        "required": true
+      },
+      "conditional": {
+        "hide": "=ingressEnabled = \"false\" or operateEnabled = \"false\""
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "Yes",
+          "value": "true"
+        },
+        {
+          "label": "No",
+          "value": "false"
+        }
+      ],
+      "label": "Install Optimize",
+      "type": "select",
+      "layout": {
+        "row": "Row_1w34lkk",
+        "columns": 8
+      },
+      "id": "Field_1ehs7th",
+      "key": "optimizeEnabled",
+      "validate": {
+        "required": true
+      },
+      "defaultValue": "true",
+      "conditional": {
+        "hide": "=authEnabled = \"false\""
+      }
+    },
+    {
+      "label": "Optimize Context Path",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1w34lkk",
+        "columns": null
+      },
+      "id": "Field_1nz9zx3",
+      "key": "optimizeContextPath",
+      "defaultValue": "/optimize",
+      "conditional": {
+        "hide": "=ingressEnabled = \"false\" or optimizeEnabled = \"false\""
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "Yes",
+          "value": "true"
+        },
+        {
+          "label": "No",
+          "value": "false"
+        }
+      ],
+      "label": "Install Connectors?",
+      "type": "select",
+      "layout": {
+        "row": "Row_10e1ef4",
+        "columns": 8
+      },
+      "id": "Field_1i24cm5",
+      "key": "connectorsEnabled",
+      "defaultValue": "true",
+      "conditional": {
+        "hide": "=authEnabled = \"false\""
+      }
+    },
+    {
+      "label": "Connectors Context Path",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_10e1ef4",
+        "columns": null
+      },
+      "id": "Field_097wmft",
+      "key": "connectorsContextPath",
+      "defaultValue": "/connectors",
+      "conditional": {
+        "hide": "=authEnabled = \"false\" or ingressEnabled = \"false\" or connectorsEnabled = \"false\""
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "Yes",
+          "value": "true"
+        },
+        {
+          "label": "No",
+          "value": "false"
+        }
+      ],
+      "label": "Install Web Modeler?",
+      "type": "select",
+      "layout": {
+        "row": "Row_12n275m",
+        "columns": 8
+      },
+      "id": "Field_1viwh4g",
+      "key": "modelerEnabled",
+      "description": "Web Modeler requires Enterprise License. You must have Camunda Docker Registry Credentials",
+      "defaultValue": "true",
+      "conditional": {
+        "hide": "=authEnabled = \"false\""
+      }
+    },
+    {
+      "label": "Modeler Context Path",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_12n275m",
+        "columns": null
+      },
+      "id": "Field_0pd6dx8",
+      "key": "modelerContextPath",
+      "defaultValue": "/modeler",
+      "conditional": {
+        "hide": "=ingressEnabled = \"false\" or modelerEnabled = \"false\""
+      }
+    },
+    {
+      "text": "## Docker",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_02phm2t",
+        "columns": null
+      },
+      "id": "Field_0h2r6bq",
+      "conditional": {
+        "hide": "=modelerEnabled = \"false\""
+      }
+    },
+    {
+      "label": "Camunda Docker Registry Username",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1k96pf4",
+        "columns": null
+      },
+      "id": "Field_1jwztw9",
+      "key": "camundaDockerRegistryUsername",
+      "defaultValue": "secrets.DOCKER_REGISTRY_USERNAME",
+      "validate": {
+        "required": true
+      },
+      "conditional": {
+        "hide": "=modelerEnabled = \"false\""
+      }
+    },
+    {
+      "label": "Camunda Docker Registry Password",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1k96pf4",
+        "columns": null
+      },
+      "id": "Field_0tlm4e8",
+      "key": "camundaDockerRegistryPassword",
+      "validate": {
+        "required": true
+      },
+      "conditional": {
+        "hide": "=modelerEnabled = \"false\""
+      },
+      "defaultValue": "secrets.DOCKER_REGISTRY_PASSWORD"
+    },
+    {
+      "label": "Camunda Docker Registry Email",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_01lmagi",
+        "columns": null
+      },
+      "id": "Field_0is51i7",
+      "key": "camundaDockerRegistryEmail",
+      "defaultValue": "secrets.DOCKER_REGISTRY_EMAIL",
+      "validate": {
+        "required": true
+      },
+      "conditional": {
+        "hide": "=modelerEnabled = \"false\""
+      }
+    },
+    {
+      "label": "Camunda Docker Registry Url",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_161oshf",
+        "columns": null
+      },
+      "id": "Field_1a7590v",
+      "key": "camundaDockerRegistryUrl",
+      "defaultValue": "https://registry.camunda.cloud/",
+      "validate": {
+        "required": true
+      },
+      "conditional": {
+        "hide": "=modelerEnabled = \"false\""
+      }
+    },
+    {
+      "text": "## Monitoring",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_0zble7z",
+        "columns": null
+      },
+      "id": "Field_14qle6j"
+    },
+    {
+      "values": [
+        {
+          "label": "Yes",
+          "value": "true"
+        },
+        {
+          "label": "No",
+          "value": "false"
+        }
+      ],
+      "label": "Setup Prometheus and Grafana dashboard Metrics?",
+      "type": "select",
+      "layout": {
+        "row": "Row_1r91ie6",
+        "columns": null
+      },
+      "id": "Field_0hdzdxb",
+      "key": "metricsEnabled",
+      "defaultValue": "false",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "c8sm-installation-form"
+}</zeebe:userTaskForm>
+    </bpmn:extensionElements>
+    <bpmn:startEvent id="StartEvent_1" name="Start">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:output source="=if is defined(google.clientId) then google.clientId else &#34;291005901394-60d88q0qhsopc4rmj817oldolqer8v1c.apps.googleusercontent.com&#34;" target="google.clientId" />
+          <zeebe:output source="=if is defined(google.projectId) then google.projectId else &#34;camunda-researchanddevelopment&#34;" target="google.projectId" />
+          <zeebe:output source="=if is defined(zoneId) then zoneId else &#34;us-central1-a&#34;" target="google.zoneId" />
+          <zeebe:output source="=if is defined(accessToken) then accessToken else null" target="google.accessToken" />
+          <zeebe:output source="=if is defined(refreshToken) then refreshToken else null" target="google.refreshToken" />
+          <zeebe:output source="=if is defined(authorizationCode) then authorizationCode else null" target="google.authorizationCode" />
+          <zeebe:output source="=if is defined(clusterId) then clusterId else null" target="google.clusterId" />
+          <zeebe:output source="=if is defined(clusterDescription) then clusterDescription else null" target="google.clusterDescription" />
+          <zeebe:output source="=if is defined(machineType) then machineType else null" target="google.machineType" />
+          <zeebe:output source="=if is defined(tlsEnabled) and tlsEnabled = &#34;true&#34; then &#34;https&#34; else &#34;http&#34;" target="urlScheme" />
+          <zeebe:output source="=if is defined(modelerEnabled) then modelerEnabled else &#34;false&#34;" target="modelerEnabled" />
+        </zeebe:ioMapping>
+        <zeebe:properties>
+          <zeebe:property name="publicAccess" value="true" />
+        </zeebe:properties>
+        <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_2acniie" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_16be2u7</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_16be2u7" sourceRef="StartEvent_1" targetRef="Gateway_010mi0d" />
+    <bpmn:callActivity id="Activity_1yr9dep" name="Authenticate to Google">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="Process_gcpOauth2" propagateAllChildVariables="false" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=if is defined(google.accessToken) then google.accessToken else null" target="gcpAccessToken" />
+          <zeebe:input source="=if is defined(google.refreshToken) then google.refreshToken else null" target="gcpRefreshToken" />
+          <zeebe:input source="=google.clientId" target="gcpClientId" />
+          <zeebe:input source="=google.authorizationCode" target="gcpAuthorizationCode" />
+          <zeebe:output source="=gcpAccessToken" target="google.accessToken" />
+          <zeebe:output source="=gcpRefreshToken" target="google.refreshToken" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_11le3gp</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xqw2rb</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_0xqw2rb" sourceRef="Activity_1yr9dep" targetRef="Activity_060oh9p" />
+    <bpmn:callActivity id="Activity_1h61xmo" name="Install Nginx Ingress Controller">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="Process_cloudRunJob" propagateAllChildVariables="false" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;make use-kube ; make ingress-nginx&#34;" target="commands" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0cbeybb</bpmn:incoming>
+      <bpmn:outgoing>Flow_1g32u22</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_0t2g37r" name="End">
+      <bpmn:incoming>Flow_1a9g2nc</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1g32u22" sourceRef="Activity_1h61xmo" targetRef="Gateway_0mirwwn" />
+    <bpmn:exclusiveGateway id="Gateway_03ovk0n" name="Use https encrypted with tls certificates?" default="Flow_02d46lo">
+      <bpmn:incoming>Flow_1aqrvbq</bpmn:incoming>
+      <bpmn:outgoing>Flow_1tkmlkh</bpmn:outgoing>
+      <bpmn:outgoing>Flow_02d46lo</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1tkmlkh" name="Yes" sourceRef="Gateway_03ovk0n" targetRef="Activity_1jh4fn9">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=urlScheme = "https"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="Gateway_02lm0el" name="Use Lets Encrypt Production?" default="Flow_1obaptk">
+      <bpmn:incoming>Flow_077vprs</bpmn:incoming>
+      <bpmn:outgoing>Flow_1obaptk</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1fa4bjs</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1obaptk" name="prod" sourceRef="Gateway_02lm0el" targetRef="Activity_19pl5ma" />
+    <bpmn:sequenceFlow id="Flow_1fa4bjs" name="stage" sourceRef="Gateway_02lm0el" targetRef="Activity_0n1d9vg">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=letsencryptMode = "stage"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="Gateway_0cwc6ik">
+      <bpmn:incoming>Flow_02d46lo</bpmn:incoming>
+      <bpmn:incoming>Flow_1ja031b</bpmn:incoming>
+      <bpmn:incoming>Flow_1cddjz3</bpmn:incoming>
+      <bpmn:outgoing>Flow_05vohtk</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_05vohtk" sourceRef="Gateway_0cwc6ik" targetRef="Gateway_15n6doi" />
+    <bpmn:sequenceFlow id="Flow_077vprs" sourceRef="Activity_1jh4fn9" targetRef="Gateway_02lm0el" />
+    <bpmn:callActivity id="Activity_1jh4fn9" name="Install Cert Manager">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="Process_cloudRunJob" propagateAllChildVariables="false" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;make use-kube ; make cert-manager&#34;" target="commands" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1tkmlkh</bpmn:incoming>
+      <bpmn:outgoing>Flow_077vprs</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_02d46lo" sourceRef="Gateway_03ovk0n" targetRef="Gateway_0cwc6ik" />
+    <bpmn:callActivity id="Activity_19pl5ma" name="Lets Encrypt Prod">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="Process_cloudRunJob" propagateAllChildVariables="false" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;make use-kube ; make letsencrypt-prod&#34;" target="commands" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1obaptk</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ja031b</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:callActivity id="Activity_0n1d9vg" name="Lets Encrypt Stage">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="Process_cloudRunJob" propagateAllChildVariables="false" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;make use-kube ; make letsencrypt-staging&#34;" target="commands" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1fa4bjs</bpmn:incoming>
+      <bpmn:outgoing>Flow_1cddjz3</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_1ja031b" sourceRef="Activity_19pl5ma" targetRef="Gateway_0cwc6ik" />
+    <bpmn:sequenceFlow id="Flow_1cddjz3" sourceRef="Activity_0n1d9vg" targetRef="Gateway_0cwc6ik" />
+    <bpmn:exclusiveGateway id="Gateway_15n6doi" name="Install Web Modeler?" default="Flow_053vqxf">
+      <bpmn:incoming>Flow_05vohtk</bpmn:incoming>
+      <bpmn:outgoing>Flow_1pe9py6</bpmn:outgoing>
+      <bpmn:outgoing>Flow_053vqxf</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1pe9py6" name="Yes" sourceRef="Gateway_15n6doi" targetRef="Activity_1rkhou9">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=modelerEnabled = "true"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1a9yydf" sourceRef="Activity_1rkhou9" targetRef="Gateway_0ww40s2" />
+    <bpmn:exclusiveGateway id="Gateway_010mi0d" name="Setup ingress?" default="Flow_12o9rkn">
+      <bpmn:incoming>Flow_16be2u7</bpmn:incoming>
+      <bpmn:outgoing>Flow_0cbeybb</bpmn:outgoing>
+      <bpmn:outgoing>Flow_12o9rkn</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0cbeybb" name="Yes" sourceRef="Gateway_010mi0d" targetRef="Activity_1h61xmo">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=ingressEnabled = "true"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="Gateway_1jz7cxm">
+      <bpmn:incoming>Flow_12o9rkn</bpmn:incoming>
+      <bpmn:incoming>Flow_162a4uo</bpmn:incoming>
+      <bpmn:incoming>Flow_1r7x61z</bpmn:incoming>
+      <bpmn:outgoing>Flow_1fzdf8z</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1fzdf8z" sourceRef="Gateway_1jz7cxm" targetRef="Gateway_1lcje2w" />
+    <bpmn:sequenceFlow id="Flow_12o9rkn" name="No" sourceRef="Gateway_010mi0d" targetRef="Gateway_1jz7cxm" />
+    <bpmn:sequenceFlow id="Flow_1wl7io5" sourceRef="Activity_0uwuok9" targetRef="Gateway_0b9cbdz" />
+    <bpmn:exclusiveGateway id="Gateway_1lcje2w" name="Setup Metrics?" default="Flow_0eofpv3">
+      <bpmn:incoming>Flow_1fzdf8z</bpmn:incoming>
+      <bpmn:outgoing>Flow_0lzuvld</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0eofpv3</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0lzuvld" name="Yes" sourceRef="Gateway_1lcje2w" targetRef="Activity_0uwuok9">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=metricsEnabled = "true"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:callActivity id="Activity_0uwuok9" name="Install Prometheus and Grafana">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="Process_cloudRunJob" propagateAllChildVariables="false" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;make use-kube ; make metrics&#34;" target="commands" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0lzuvld</bpmn:incoming>
+      <bpmn:outgoing>Flow_1wl7io5</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:exclusiveGateway id="Gateway_0b9cbdz">
+      <bpmn:incoming>Flow_1wl7io5</bpmn:incoming>
+      <bpmn:incoming>Flow_0eofpv3</bpmn:incoming>
+      <bpmn:outgoing>Flow_1aqrvbq</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1aqrvbq" sourceRef="Gateway_0b9cbdz" targetRef="Gateway_03ovk0n" />
+    <bpmn:sequenceFlow id="Flow_0eofpv3" name="No" sourceRef="Gateway_1lcje2w" targetRef="Gateway_0b9cbdz" />
+    <bpmn:exclusiveGateway id="Gateway_0ww40s2">
+      <bpmn:incoming>Flow_1a9yydf</bpmn:incoming>
+      <bpmn:incoming>Flow_053vqxf</bpmn:incoming>
+      <bpmn:outgoing>Flow_1tf9f75</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1tf9f75" sourceRef="Gateway_0ww40s2" targetRef="Activity_16t962z" />
+    <bpmn:sequenceFlow id="Flow_053vqxf" name="No" sourceRef="Gateway_15n6doi" targetRef="Gateway_0ww40s2" />
+    <bpmn:callActivity id="Activity_1rkhou9" name="Create Pull Secret">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="Process_cloudRunJob" propagateAllChildVariables="false" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;make use-kube ; make image-pull-secret&#34;" target="commands" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1pe9py6</bpmn:incoming>
+      <bpmn:outgoing>Flow_1a9yydf</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_1wyf0mm" sourceRef="Activity_16t962z" targetRef="Gateway_1dsjr9a" />
+    <bpmn:callActivity id="Activity_16t962z" name="Install Camunda 8">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="Process_cloudRunJob" propagateAllChildVariables="false" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;make use-kube ; make all-values ; make camunda&#34;" target="commands" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1tf9f75</bpmn:incoming>
+      <bpmn:outgoing>Flow_1wyf0mm</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_1a9g2nc" sourceRef="Activity_1eb1uc1" targetRef="Event_0t2g37r" />
+    <bpmn:serviceTask id="Activity_1eb1uc1" name="Notify environment ready" zeebe:modelerTemplate="io.camunda.connectors.SendGrid.v2" zeebe:modelerTemplateVersion="1" zeebe:modelerTemplateIcon="data:image/svg+xml;utf8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M0.285706%205.40847H5.43837V10.5611H0.285706V5.40847Z%22%20fill%3D%22white%22%2F%3E%0A%3Cpath%20d%3D%22M0.285706%205.40847H5.43837V10.5611H0.285706V5.40847Z%22%20fill%3D%22%2399E1F4%22%2F%3E%0A%3Cpath%20d%3D%22M5.43837%2010.5611L10.5611%2010.5616V15.6844H5.43837V10.5611Z%22%20fill%3D%22white%22%2F%3E%0A%3Cpath%20d%3D%22M5.43837%2010.5611L10.5611%2010.5616V15.6844H5.43837V10.5611Z%22%20fill%3D%22%2399E1F4%22%2F%3E%0A%3Cpath%20d%3D%22M0.285706%2015.6846L5.43837%2015.6844V15.7143H0.285706V15.6846ZM0.285706%2010.5619H5.43837V15.6844L0.285706%2015.6846V10.5619Z%22%20fill%3D%22%231A82E2%22%2F%3E%0A%3Cpath%20d%3D%22M5.43837%200.285706H10.5611V5.40847H5.43837V0.285706ZM10.5616%205.43837H15.7143V10.5611H10.5616V5.43837Z%22%20fill%3D%22%2300B3E3%22%2F%3E%0A%3Cpath%20d%3D%22M5.43837%2010.5611L10.5611%2010.5616V5.40847H5.43837V10.5611Z%22%20fill%3D%22%23009DD9%22%2F%3E%0A%3Cpath%20d%3D%22M10.5611%200.285706H15.7143V5.40847H10.5611V0.285706Z%22%20fill%3D%22%231A82E2%22%2F%3E%0A%3Cpath%20d%3D%22M10.5611%205.40847H15.7143V5.43837H10.5616L10.5611%205.40847Z%22%20fill%3D%22%231A82E2%22%2F%3E%0A%3C%2Fsvg%3E">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda:sendgrid:1" />
+        <zeebe:ioMapping>
+          <zeebe:input source="secrets.SENDGRID_API_KEY" target="apiKey" />
+          <zeebe:input source="Demo" target="from.name" />
+          <zeebe:input source="demo@camunda.com" target="from.email" />
+          <zeebe:input source="=clusterId" target="to.name" />
+          <zeebe:input source="=if is defined(emailAddress) then emailAddress else &#34;david.paroulek@camunda.com&#34;" target="to.email" />
+          <zeebe:input source="mail" target="unMappedFieldNotUseInModel.mailType" />
+          <zeebe:input source="=&#34;Your C8SM Environment, &#39;&#34; + clusterId + &#34;&#39;, is ready!&#34;" target="content.subject" />
+          <zeebe:input source="text/plain" target="content.type" />
+          <zeebe:input source="={&#10;  &#34;ipAddressResult&#34;: if is defined(clusterEndPoint) then clusterEndPoint else &#34;&#60;IP Unknown&#62;&#34;,&#10;  &#34;clusterIdResult&#34;: if is defined(clusterId) then clusterId else &#34;&#60;Cluster Name Unknown&#62;&#34;,&#10;  &#34;baseDomainResult&#34;: if is defined(baseDomainName) then baseDomainName else &#34;&#60;Domain Name Unknown&#62;&#34;,&#10;  &#34;domainResult&#34;: if baseDomainNameResult = &#34;nip.io&#34; then clusterIdResult + &#34;.&#34; + ipAddressResult + &#34;.&#34; + baseDomainResult else clusterIdResult + &#34;.&#34; + baseDomainResult,&#10;  &#34;urlSchemeResult&#34;: if is defined(urlScheme) then urlScheme else &#34;&#60;http or https Unknown&#62;&#34;,&#10;  &#34;urlResult&#34;: urlSchemeResult + &#34; &#34; + domainResult,&#10;  &#34;result0&#34;: &#34;Your C8SM Environment is ready! \n\n&#34;,&#10;  &#34;result1&#34;: &#34;IP Address: &#34; + ipAddressResult + &#34;\n&#34;,&#10;  &#34;result2&#34;: &#34;Base URL: &#34; + urlResult + &#34;\n&#34;,&#10;  &#34;result3&#34;: &#34;Keycloak: &#34; + urlResult + &#34;/auth&#34; + &#34;\n&#34;,&#10;  &#34;result4&#34;: &#34;Identity: &#34; + urlResult + &#34;/identity&#34; + &#34;\n&#34;,&#10;  &#34;result5&#34;: &#34;Operate: &#34; + urlResult + &#34;/operate&#34; + &#34;\n&#34;,&#10;  &#34;result6&#34;: &#34;Tasklist: &#34; + urlResult + &#34;/tasklist&#34; + &#34;\n&#34;,&#10;  &#34;result7&#34;: &#34;Optimize: &#34; + urlResult + &#34;/optimize&#34; + &#34;\n&#34;,&#10;  &#34;result&#34;: result0 + result1 + result2 + result3 + result4 + result5 + result6 + result7&#10;}.result" target="content.value" />
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_04lqakm</bpmn:incoming>
+      <bpmn:outgoing>Flow_1a9g2nc</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_04lqakm" sourceRef="Activity_060oh9p" targetRef="Activity_1eb1uc1" />
+    <bpmn:serviceTask id="Activity_060oh9p" name="Get Cluster Details" zeebe:modelerTemplate="io.camunda.connectors.HttpJson.v2" zeebe:modelerTemplateVersion="1" zeebe:modelerTemplateIcon="data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%2018%2018%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M17.0335%208.99997C17.0335%2013.4475%2013.4281%2017.0529%208.98065%2017.0529C4.53316%2017.0529%200.927765%2013.4475%200.927765%208.99997C0.927765%204.55248%204.53316%200.947083%208.98065%200.947083C13.4281%200.947083%2017.0335%204.55248%2017.0335%208.99997Z%22%20fill%3D%22%23505562%22%2F%3E%0A%3Cpath%20d%3D%22M4.93126%2014.1571L6.78106%203.71471H10.1375C11.1917%203.71471%2011.9824%203.98323%2012.5095%204.52027C13.0465%205.04736%2013.315%205.73358%2013.315%206.57892C13.315%207.44414%2013.0714%208.15522%2012.5841%208.71215C12.1067%209.25913%2011.4553%209.63705%2010.6298%209.8459L12.0619%2014.1571H10.3315L9.03364%2010.0249H7.24351L6.51254%2014.1571H4.93126ZM7.49711%208.59281H9.24248C9.99832%208.59281%2010.5901%208.42374%2011.0177%208.08561C11.4553%207.73753%2011.6741%207.26513%2011.6741%206.66842C11.6741%206.19106%2011.5249%205.81811%2011.2265%205.54959C10.9282%205.27113%2010.4558%205.1319%209.80936%205.1319H8.10874L7.49711%208.59281Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E%0A">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda:http-json:1" />
+        <zeebe:ioMapping>
+          <zeebe:input source="noAuth" target="authentication.type" />
+          <zeebe:input source="get" target="method" />
+          <zeebe:input source="=&#34;https://container.googleapis.com/v1/projects/&#34;+google.projectId+&#34;/locations/&#34;+google.zoneId+&#34;/clusters/&#34;+google.clusterId" target="url" />
+          <zeebe:input source="={&#10;  &#34;Authorization&#34;: &#34;Bearer &#34; + google.accessToken,&#10;  &#34;Accept&#34;: &#34;application/json&#34;&#10;}" target="headers" />
+          <zeebe:input source="20" target="connectionTimeoutInSeconds" />
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultVariable" value="getClusterDetailsResponse" />
+          <zeebe:header key="resultExpression" value="={&#10;  clusterStatus: if is defined(response.body.status) then response.body.status else &#34;unknown&#34;,&#10;  clusterEndpoint: if is defined(response.body.endpoint) then response.body.endpoint else &#34;unknown&#34;&#10;}" />
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0xqw2rb</bpmn:incoming>
+      <bpmn:outgoing>Flow_04lqakm</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_0mirwwn" name="Create DNS A Record?" default="Flow_1r7x61z">
+      <bpmn:incoming>Flow_1g32u22</bpmn:incoming>
+      <bpmn:outgoing>Flow_1yph8r0</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1r7x61z</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1yph8r0" name="Yes" sourceRef="Gateway_0mirwwn" targetRef="Activity_1n9nldm">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=createDNSRecord = "true"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_162a4uo" sourceRef="Activity_1n9nldm" targetRef="Gateway_1jz7cxm" />
+    <bpmn:sequenceFlow id="Flow_1r7x61z" name="No" sourceRef="Gateway_0mirwwn" targetRef="Gateway_1jz7cxm" />
+    <bpmn:callActivity id="Activity_1n9nldm" name="Create DNS A Record">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="Process_cloudRunJob" propagateAllChildVariables="false" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;make use-kube ; make create-cloud-dns&#34;" target="commands" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1yph8r0</bpmn:incoming>
+      <bpmn:outgoing>Flow_162a4uo</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:exclusiveGateway id="Gateway_1dsjr9a" name="Generate TLS Certificates?" default="Flow_0mzl9b5">
+      <bpmn:incoming>Flow_1wyf0mm</bpmn:incoming>
+      <bpmn:outgoing>Flow_04ac21p</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0mzl9b5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_04ac21p" name="Yes" sourceRef="Gateway_1dsjr9a" targetRef="Gateway_048bo0x">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=urlScheme = "https"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_183fc3o" sourceRef="Activity_0jw7x19" targetRef="Gateway_0g2suob" />
+    <bpmn:exclusiveGateway id="Gateway_0g2suob">
+      <bpmn:incoming>Flow_183fc3o</bpmn:incoming>
+      <bpmn:incoming>Flow_0mzl9b5</bpmn:incoming>
+      <bpmn:incoming>Flow_104a585</bpmn:incoming>
+      <bpmn:outgoing>Flow_11le3gp</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_11le3gp" sourceRef="Gateway_0g2suob" targetRef="Activity_1yr9dep" />
+    <bpmn:sequenceFlow id="Flow_0mzl9b5" name="No" sourceRef="Gateway_1dsjr9a" targetRef="Gateway_0g2suob" />
+    <bpmn:callActivity id="Activity_0jw7x19" name="Annotate Ingress for TLS for letsencrypt prod">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="Process_cloudRunJob" propagateAllChildVariables="false" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;make use-kube ; make annotate-ingress-tls&#34;" target="commands" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1tadr5i</bpmn:incoming>
+      <bpmn:outgoing>Flow_183fc3o</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:exclusiveGateway id="Gateway_048bo0x" name="Letsencrypt Prod?" default="Flow_1tadr5i">
+      <bpmn:incoming>Flow_04ac21p</bpmn:incoming>
+      <bpmn:outgoing>Flow_1tadr5i</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1ahkxbl</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1tadr5i" name="Prod" sourceRef="Gateway_048bo0x" targetRef="Activity_0jw7x19" />
+    <bpmn:sequenceFlow id="Flow_1ahkxbl" name="Stage" sourceRef="Gateway_048bo0x" targetRef="Activity_1n4tk45">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=letsencryptMode = "stage"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_104a585" sourceRef="Activity_1n4tk45" targetRef="Gateway_0g2suob" />
+    <bpmn:callActivity id="Activity_1n4tk45" name="Annotate Ingress for TLS for letsencrypt staging">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="Process_cloudRunJob" propagateAllChildVariables="false" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;make use-kube ; make annotate-letsencrypt-stage&#34;" target="commands" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ahkxbl</bpmn:incoming>
+      <bpmn:outgoing>Flow_104a585</bpmn:outgoing>
+    </bpmn:callActivity>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_installCamunda">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="150" y="220" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="156" y="263" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1nrqgc9_di" bpmnElement="Activity_1yr9dep">
+        <dc:Bounds x="2580" y="198" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1lu2uwz_di" bpmnElement="Activity_1h61xmo">
+        <dc:Bounds x="320" y="198" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0t2g37r_di" bpmnElement="Event_0t2g37r">
+        <dc:Bounds x="3002" y="220" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3010" y="263" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_03ovk0n_di" bpmnElement="Gateway_03ovk0n" isMarkerVisible="true">
+        <dc:Bounds x="1105" y="213" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1087" y="163" width="85" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_02lm0el_di" bpmnElement="Gateway_02lm0el" isMarkerVisible="true">
+        <dc:Bounds x="1345" y="213" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1328" y="273" width="84" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0cwc6ik_di" bpmnElement="Gateway_0cwc6ik" isMarkerVisible="true">
+        <dc:Bounds x="1615" y="213" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_13iowvb_di" bpmnElement="Activity_1jh4fn9">
+        <dc:Bounds x="1190" y="198" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_15ceu6d_di" bpmnElement="Activity_19pl5ma">
+        <dc:Bounds x="1460" y="198" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1mab4ok_di" bpmnElement="Activity_0n1d9vg">
+        <dc:Bounds x="1460" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_15n6doi_di" bpmnElement="Gateway_15n6doi" isMarkerVisible="true">
+        <dc:Bounds x="1705" y="213" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1702" y="176" width="55" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_010mi0d_di" bpmnElement="Gateway_010mi0d" isMarkerVisible="true">
+        <dc:Bounds x="235" y="213" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="225" y="183" width="74" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1jz7cxm_di" bpmnElement="Gateway_1jz7cxm" isMarkerVisible="true">
+        <dc:Bounds x="695" y="213" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1lcje2w_di" bpmnElement="Gateway_1lcje2w" isMarkerVisible="true">
+        <dc:Bounds x="775" y="213" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="763" y="189" width="74" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_06y6e20_di" bpmnElement="Activity_0uwuok9">
+        <dc:Bounds x="870" y="198" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0b9cbdz_di" bpmnElement="Gateway_0b9cbdz" isMarkerVisible="true">
+        <dc:Bounds x="1015" y="213" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0ww40s2_di" bpmnElement="Gateway_0ww40s2" isMarkerVisible="true">
+        <dc:Bounds x="1935" y="213" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0qj2qvl_di" bpmnElement="Activity_1rkhou9">
+        <dc:Bounds x="1800" y="198" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1brshca_di" bpmnElement="Activity_16t962z">
+        <dc:Bounds x="2020" y="198" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ek70fu_di" bpmnElement="Activity_1eb1uc1">
+        <dc:Bounds x="2860" y="198" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1w3hgi9_di" bpmnElement="Activity_060oh9p">
+        <dc:Bounds x="2720" y="198" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0mirwwn_di" bpmnElement="Gateway_0mirwwn" isMarkerVisible="true">
+        <dc:Bounds x="445" y="213" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="435" y="270" width="70" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1eiombf_di" bpmnElement="Activity_1n9nldm">
+        <dc:Bounds x="550" y="198" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1dsjr9a_di" bpmnElement="Gateway_1dsjr9a" isMarkerVisible="true">
+        <dc:Bounds x="2145" y="213" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2136" y="270" width="69" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0g2suob_di" bpmnElement="Gateway_0g2suob" isMarkerVisible="true">
+        <dc:Bounds x="2495" y="213" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19jgggn_di" bpmnElement="Activity_0jw7x19">
+        <dc:Bounds x="2370" y="198" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_048bo0x_di" bpmnElement="Gateway_048bo0x" isMarkerVisible="true">
+        <dc:Bounds x="2255" y="213" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2235" y="193" width="90" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_157hsqu_di" bpmnElement="Activity_1n4tk45">
+        <dc:Bounds x="2370" y="310" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_16be2u7_di" bpmnElement="Flow_16be2u7">
+        <di:waypoint x="186" y="238" />
+        <di:waypoint x="235" y="238" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xqw2rb_di" bpmnElement="Flow_0xqw2rb">
+        <di:waypoint x="2680" y="238" />
+        <di:waypoint x="2720" y="238" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1g32u22_di" bpmnElement="Flow_1g32u22">
+        <di:waypoint x="420" y="238" />
+        <di:waypoint x="445" y="238" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tkmlkh_di" bpmnElement="Flow_1tkmlkh">
+        <di:waypoint x="1155" y="238" />
+        <di:waypoint x="1190" y="238" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1164" y="220" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1obaptk_di" bpmnElement="Flow_1obaptk">
+        <di:waypoint x="1395" y="238" />
+        <di:waypoint x="1460" y="238" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1416" y="220" width="23" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fa4bjs_di" bpmnElement="Flow_1fa4bjs">
+        <di:waypoint x="1370" y="213" />
+        <di:waypoint x="1370" y="120" />
+        <di:waypoint x="1460" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1406" y="93" width="27" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05vohtk_di" bpmnElement="Flow_05vohtk">
+        <di:waypoint x="1665" y="238" />
+        <di:waypoint x="1705" y="238" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_077vprs_di" bpmnElement="Flow_077vprs">
+        <di:waypoint x="1290" y="238" />
+        <di:waypoint x="1345" y="238" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02d46lo_di" bpmnElement="Flow_02d46lo">
+        <di:waypoint x="1130" y="263" />
+        <di:waypoint x="1130" y="310" />
+        <di:waypoint x="1640" y="310" />
+        <di:waypoint x="1640" y="263" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ja031b_di" bpmnElement="Flow_1ja031b">
+        <di:waypoint x="1560" y="238" />
+        <di:waypoint x="1615" y="238" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cddjz3_di" bpmnElement="Flow_1cddjz3">
+        <di:waypoint x="1560" y="120" />
+        <di:waypoint x="1640" y="120" />
+        <di:waypoint x="1640" y="213" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1pe9py6_di" bpmnElement="Flow_1pe9py6">
+        <di:waypoint x="1755" y="238" />
+        <di:waypoint x="1800" y="238" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1769" y="220" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1a9yydf_di" bpmnElement="Flow_1a9yydf">
+        <di:waypoint x="1900" y="238" />
+        <di:waypoint x="1935" y="238" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0cbeybb_di" bpmnElement="Flow_0cbeybb">
+        <di:waypoint x="285" y="238" />
+        <di:waypoint x="320" y="238" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="294" y="220" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fzdf8z_di" bpmnElement="Flow_1fzdf8z">
+        <di:waypoint x="745" y="238" />
+        <di:waypoint x="775" y="238" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12o9rkn_di" bpmnElement="Flow_12o9rkn">
+        <di:waypoint x="260" y="263" />
+        <di:waypoint x="260" y="310" />
+        <di:waypoint x="720" y="310" />
+        <di:waypoint x="720" y="263" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="272" y="283" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1wl7io5_di" bpmnElement="Flow_1wl7io5">
+        <di:waypoint x="970" y="238" />
+        <di:waypoint x="1015" y="238" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0lzuvld_di" bpmnElement="Flow_0lzuvld">
+        <di:waypoint x="825" y="238" />
+        <di:waypoint x="870" y="238" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="839" y="220" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1aqrvbq_di" bpmnElement="Flow_1aqrvbq">
+        <di:waypoint x="1065" y="238" />
+        <di:waypoint x="1105" y="238" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0eofpv3_di" bpmnElement="Flow_0eofpv3">
+        <di:waypoint x="800" y="263" />
+        <di:waypoint x="800" y="310" />
+        <di:waypoint x="1040" y="310" />
+        <di:waypoint x="1040" y="263" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="812" y="283" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tf9f75_di" bpmnElement="Flow_1tf9f75">
+        <di:waypoint x="1985" y="238" />
+        <di:waypoint x="2020" y="238" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_053vqxf_di" bpmnElement="Flow_053vqxf">
+        <di:waypoint x="1730" y="263" />
+        <di:waypoint x="1730" y="310" />
+        <di:waypoint x="1960" y="310" />
+        <di:waypoint x="1960" y="263" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1742" y="283" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1wyf0mm_di" bpmnElement="Flow_1wyf0mm">
+        <di:waypoint x="2120" y="238" />
+        <di:waypoint x="2145" y="238" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1a9g2nc_di" bpmnElement="Flow_1a9g2nc">
+        <di:waypoint x="2960" y="238" />
+        <di:waypoint x="3002" y="238" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04lqakm_di" bpmnElement="Flow_04lqakm">
+        <di:waypoint x="2820" y="238" />
+        <di:waypoint x="2860" y="238" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1yph8r0_di" bpmnElement="Flow_1yph8r0">
+        <di:waypoint x="495" y="238" />
+        <di:waypoint x="550" y="238" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="514" y="220" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_162a4uo_di" bpmnElement="Flow_162a4uo">
+        <di:waypoint x="650" y="238" />
+        <di:waypoint x="695" y="238" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1r7x61z_di" bpmnElement="Flow_1r7x61z">
+        <di:waypoint x="470" y="213" />
+        <di:waypoint x="470" y="170" />
+        <di:waypoint x="720" y="170" />
+        <di:waypoint x="720" y="213" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="588" y="152" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04ac21p_di" bpmnElement="Flow_04ac21p">
+        <di:waypoint x="2195" y="238" />
+        <di:waypoint x="2255" y="238" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2211" y="220" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_183fc3o_di" bpmnElement="Flow_183fc3o">
+        <di:waypoint x="2470" y="238" />
+        <di:waypoint x="2495" y="238" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11le3gp_di" bpmnElement="Flow_11le3gp">
+        <di:waypoint x="2545" y="238" />
+        <di:waypoint x="2580" y="238" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mzl9b5_di" bpmnElement="Flow_0mzl9b5">
+        <di:waypoint x="2170" y="213" />
+        <di:waypoint x="2170" y="170" />
+        <di:waypoint x="2520" y="170" />
+        <di:waypoint x="2520" y="213" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2338" y="152" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tadr5i_di" bpmnElement="Flow_1tadr5i">
+        <di:waypoint x="2305" y="238" />
+        <di:waypoint x="2370" y="238" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2326" y="220" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ahkxbl_di" bpmnElement="Flow_1ahkxbl">
+        <di:waypoint x="2280" y="263" />
+        <di:waypoint x="2280" y="350" />
+        <di:waypoint x="2370" y="350" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2285" y="303" width="29" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_104a585_di" bpmnElement="Flow_104a585">
+        <di:waypoint x="2470" y="350" />
+        <di:waypoint x="2520" y="350" />
+        <di:waypoint x="2520" y="263" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

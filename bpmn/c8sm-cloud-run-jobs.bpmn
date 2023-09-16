@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="cbae99f" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.3.0" camunda:diagramRelationId="b2f7ac0c-539d-4d08-a0ba-9339a36ce0ab">
+  <bpmn:process id="Process_cloudRunJob" name="C8SM - Cloud Run Jobs" isExecutable="true">
+    <bpmn:extensionElements>
+      <zeebe:userTaskForm id="userTaskForm_0d6ian1">{
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.2.0",
+  "exporter": {
+    "name": "Camunda Web Modeler",
+    "version": "6590335"
+  },
+  "schemaVersion": 10,
+  "components": [
+    {
+      "text": "#### Complete the Task to Continue ...",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_005b8v1",
+        "columns": null
+      },
+      "id": "Field_1b72auk"
+    }
+  ],
+  "type": "default",
+  "id": "Form_1ig21x6"
+}</zeebe:userTaskForm>
+    </bpmn:extensionElements>
+    <bpmn:startEvent id="StartEvent_1" name="Start">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:output source="=if is defined(google.clientId) then google.clientId else &#34;291005901394-60d88q0qhsopc4rmj817oldolqer8v1c.apps.googleusercontent.com&#34;" target="google.clientId" />
+          <zeebe:output source="=if is defined(google.projectId) then google.projectId else &#34;camunda-researchanddevelopment&#34;" target="google.projectId" />
+        </zeebe:ioMapping>
+        <zeebe:properties />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_05vsyqz</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_05vsyqz" sourceRef="StartEvent_1" targetRef="Activity_06cr4mh" />
+    <bpmn:callActivity id="Activity_06cr4mh" name="Authenticate to Google">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="Process_gcpOauth2" propagateAllChildVariables="false" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=if is defined(google.accessToken) then google.accessToken else null" target="gcpAccessToken" />
+          <zeebe:input source="=if is defined(google.refreshToken) then google.refreshToken else null" target="gcpRefreshToken" />
+          <zeebe:input source="=google.clientId" target="gcpClientId" />
+          <zeebe:output source="=gcpAccessToken" target="google.accessToken" />
+          <zeebe:output source="=gcpRefreshToken" target="google.refreshToken" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_05vsyqz</bpmn:incoming>
+      <bpmn:outgoing>Flow_08fbhgb</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_08fbhgb" sourceRef="Activity_06cr4mh" targetRef="Activity_09owpkz" />
+    <bpmn:serviceTask id="Activity_0juxv0t" name="Configure Cloud Run Job" zeebe:modelerTemplate="io.camunda.connectors.HttpJson.v2" zeebe:modelerTemplateVersion="1" zeebe:modelerTemplateIcon="data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%2018%2018%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M17.0335%208.99997C17.0335%2013.4475%2013.4281%2017.0529%208.98065%2017.0529C4.53316%2017.0529%200.927765%2013.4475%200.927765%208.99997C0.927765%204.55248%204.53316%200.947083%208.98065%200.947083C13.4281%200.947083%2017.0335%204.55248%2017.0335%208.99997Z%22%20fill%3D%22%23505562%22%2F%3E%0A%3Cpath%20d%3D%22M4.93126%2014.1571L6.78106%203.71471H10.1375C11.1917%203.71471%2011.9824%203.98323%2012.5095%204.52027C13.0465%205.04736%2013.315%205.73358%2013.315%206.57892C13.315%207.44414%2013.0714%208.15522%2012.5841%208.71215C12.1067%209.25913%2011.4553%209.63705%2010.6298%209.8459L12.0619%2014.1571H10.3315L9.03364%2010.0249H7.24351L6.51254%2014.1571H4.93126ZM7.49711%208.59281H9.24248C9.99832%208.59281%2010.5901%208.42374%2011.0177%208.08561C11.4553%207.73753%2011.6741%207.26513%2011.6741%206.66842C11.6741%206.19106%2011.5249%205.81811%2011.2265%205.54959C10.9282%205.27113%2010.4558%205.1319%209.80936%205.1319H8.10874L7.49711%208.59281Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E%0A">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda:http-json:1" />
+        <zeebe:ioMapping>
+          <zeebe:input source="noAuth" target="authentication.type" />
+          <zeebe:input source="put" target="method" />
+          <zeebe:input source="=&#34;https://europe-west9-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/&#34;+google.projectId+&#34;/jobs/&#34;+google.jobId" target="url" />
+          <zeebe:input source="={&#10;  &#34;Authorization&#34;: &#34;Bearer &#34; + google.accessToken,&#10;  &#34;Accept&#34;: &#34;application/json&#34;&#10;}" target="headers" />
+          <zeebe:input source="20" target="connectionTimeoutInSeconds" />
+          <zeebe:input source="={&#10;  &#34;apiVersion&#34;: &#34;run.googleapis.com/v1&#34;,&#10;  &#34;kind&#34;: &#34;Job&#34;,&#10;  &#34;metadata&#34;: {&#10;    &#34;name&#34;: jobId&#10;  },&#10;  &#34;spec&#34;: {&#10;    &#34;template&#34;: {&#10;      &#34;spec&#34;: {&#10;        &#34;template&#34;: {&#10;          &#34;spec&#34;: {&#10;            &#34;containers&#34;: [{&#10;              &#34;image&#34;:  &#34;upgradingdave/gcp&#34;,&#10;              &#34;env&#34;: [{&#10;                &#34;name&#34;: &#34;project&#34;,&#10;                &#34;value&#34;: google.projectId&#10;              },{&#10;                &#34;name&#34;: &#34;clusterName&#34;,&#10;                &#34;value&#34;: google.clusterId&#10;              },{&#10;                &#34;name&#34;: &#34;region&#34;,&#10;                &#34;value&#34;: google.zoneId&#10;              },{&#10;                &#34;name&#34;: &#34;camundaDockerRegistryUrl&#34;,&#10;                &#34;value&#34;: if is defined(camundaDockerRegistryUrl) then camundaDockerRegistryUrl else &#34;unknown&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;camundaDockerRegistryUsername&#34;,&#10;                &#34;value&#34;: if is defined(camundaDockerRegistryUsername) then camundaDockerRegistryUsername else &#34;unknown&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;camundaDockerRegistryPassword&#34;,&#10;                &#34;value&#34;: if is defined(camundaDockerRegistryPassword) then camundaDockerRegistryPassword else &#34;unknown&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;camundaDockerRegistryEmail&#34;,&#10;                &#34;value&#34;: if is defined(camundaDockerRegistryEmail) then camundaDockerRegistryEmail else &#34;unknown&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;dnsLabel&#34;,&#10;                &#34;value&#34;: if (is defined(dnsLabel) and string length(dnsLabel) &#62; 0) then dnsLabel else google.clusterId&#10;              },{&#10;                &#34;name&#34;: &#34;baseDomainName&#34;,&#10;                &#34;value&#34;: if is defined(baseDomainName) then baseDomainName else &#34;nip.io&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;metricsEnabled&#34;,&#10;                &#34;value&#34;: if is defined(metricsEnabled) then metricsEnabled else &#34;false&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;version&#34;,&#10;                &#34;value&#34;: if is defined(version) then version else &#34;latest&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;ingressEnabled&#34;,&#10;                &#34;value&#34;: if is defined(ingressEnabled) then ingressEnabled else &#34;true&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;authEnabled&#34;,&#10;                &#34;value&#34;: if is defined(authEnabled) then authEnabled else &#34;false&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;urlScheme&#34;,&#10;                &#34;value&#34;: if is defined(tlsEnabled) and tlsEnabled=&#34;true&#34; then &#34;https&#34; else &#34;http&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;clusterSize&#34;,&#10;                &#34;value&#34;: if is defined(clusterSize) then clusterSize else &#34;1&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;partitionCount&#34;,&#10;                &#34;value&#34;: if is defined(partitionCount) then partitionCount else &#34;1&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;replicationFactor&#34;,&#10;                &#34;value&#34;: if is defined(replicationFactor) then replicationFactor else &#34;1&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;operateEnabled&#34;,&#10;                &#34;value&#34;: if is defined(operateEnabled) then operateEnabled else &#34;true&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;operateContextPath&#34;,&#10;                &#34;value&#34;: if is defined(operateContextPath) then operateContextPath else &#34;\/operate&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;tasklistEnabled&#34;,&#10;                &#34;value&#34;: if is defined(tasklistEnabled) then tasklistEnabled else &#34;true&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;tasklistContextPath&#34;,&#10;                &#34;value&#34;: if is defined(tasklistContextPath) then tasklistContextPath else &#34;\/tasklist&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;optimizeEnabled&#34;,&#10;                &#34;value&#34;: if is defined(optimizeEnabled) then optimizeEnabled else &#34;false&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;optimizeContextPath&#34;,&#10;                &#34;value&#34;: if is defined(optimizeContextPath) then optimizeContextPath else &#34;\/optimize&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;connectorsEnabled&#34;,&#10;                &#34;value&#34;: if is defined(connectorsEnabled) then connectorsEnabled else &#34;false&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;connectorsContextPath&#34;,&#10;                &#34;value&#34;: if is defined(connectorsContextPath) then connectorsContextPath else &#34;\/connectors&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;modelerEnabled&#34;,&#10;                &#34;value&#34;: if is defined(modelerEnabled) then modelerEnabled else &#34;false&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;modelerContextPath&#34;,&#10;                &#34;value&#34;: if is defined(modelerContextPath) then modelerContextPath else &#34;\/modeler&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;emailAddress&#34;,&#10;                &#34;value&#34;: if is defined(emailAddress) then emailAddress else &#34;david.paroulek@camunda.com&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;dnsManagedZone&#34;,&#10;                &#34;value&#34;: if is defined(dnsManagedZone) then dnsManagedZone else &#34;c8sm&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;tlsEnabled&#34;,&#10;                &#34;value&#34;: if is defined(tlsEnabled) then tlsEnabled else &#34;false&#34;&#10;              }&#10;              ],&#10;              &#34;command&#34;: &#34;sh&#34;,&#10;              &#34;args&#34;: [&#34;-c&#34;, commands]&#10;            }],&#10;            &#34;serviceAccountName&#34;: &#34;dave-p-gcp@camunda-researchanddevelopment.iam.gserviceaccount.com&#34;&#10;          }&#10;        }&#10;      }&#10;    }&#10;  }&#10;}" target="body" />
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultVariable" value="configureJobResponse" />
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0pehk72</bpmn:incoming>
+      <bpmn:outgoing>Flow_0u56sbo</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0ibhgbr" sourceRef="Activity_02qla2b" targetRef="Gateway_1w3ly3t" />
+    <bpmn:serviceTask id="Activity_02qla2b" name="Create Cloud Run Job" zeebe:modelerTemplate="io.camunda.connectors.HttpJson.v2" zeebe:modelerTemplateVersion="1" zeebe:modelerTemplateIcon="data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%2018%2018%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M17.0335%208.99997C17.0335%2013.4475%2013.4281%2017.0529%208.98065%2017.0529C4.53316%2017.0529%200.927765%2013.4475%200.927765%208.99997C0.927765%204.55248%204.53316%200.947083%208.98065%200.947083C13.4281%200.947083%2017.0335%204.55248%2017.0335%208.99997Z%22%20fill%3D%22%23505562%22%2F%3E%0A%3Cpath%20d%3D%22M4.93126%2014.1571L6.78106%203.71471H10.1375C11.1917%203.71471%2011.9824%203.98323%2012.5095%204.52027C13.0465%205.04736%2013.315%205.73358%2013.315%206.57892C13.315%207.44414%2013.0714%208.15522%2012.5841%208.71215C12.1067%209.25913%2011.4553%209.63705%2010.6298%209.8459L12.0619%2014.1571H10.3315L9.03364%2010.0249H7.24351L6.51254%2014.1571H4.93126ZM7.49711%208.59281H9.24248C9.99832%208.59281%2010.5901%208.42374%2011.0177%208.08561C11.4553%207.73753%2011.6741%207.26513%2011.6741%206.66842C11.6741%206.19106%2011.5249%205.81811%2011.2265%205.54959C10.9282%205.27113%2010.4558%205.1319%209.80936%205.1319H8.10874L7.49711%208.59281Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E%0A">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda:http-json:1" />
+        <zeebe:ioMapping>
+          <zeebe:input source="noAuth" target="authentication.type" />
+          <zeebe:input source="post" target="method" />
+          <zeebe:input source="=&#34;https://europe-west9-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/&#34;+google.projectId+&#34;/jobs&#34;" target="url" />
+          <zeebe:input source="={&#10;  &#34;Authorization&#34;: &#34;Bearer &#34; + google.accessToken,&#10;  &#34;Accept&#34;: &#34;application/json&#34;&#10;}" target="headers" />
+          <zeebe:input source="20" target="connectionTimeoutInSeconds" />
+          <zeebe:input source="={&#10;  &#34;apiVersion&#34;: &#34;run.googleapis.com/v1&#34;,&#10;  &#34;kind&#34;: &#34;Job&#34;,&#10;  &#34;metadata&#34;: {&#10;    &#34;name&#34;: jobId&#10;  },&#10;  &#34;spec&#34;: {&#10;    &#34;template&#34;: {&#10;      &#34;spec&#34;: {&#10;        &#34;template&#34;: {&#10;          &#34;spec&#34;: {&#10;            &#34;containers&#34;: [{&#10;              &#34;image&#34;:  &#34;upgradingdave/gcp&#34;,&#10;              &#34;env&#34;: [{&#10;                &#34;name&#34;: &#34;project&#34;,&#10;                &#34;value&#34;: google.projectId&#10;              },{&#10;                &#34;name&#34;: &#34;clusterName&#34;,&#10;                &#34;value&#34;: google.clusterId&#10;              },{&#10;                &#34;name&#34;: &#34;region&#34;,&#10;                &#34;value&#34;: google.zoneId&#10;              },{&#10;                &#34;name&#34;: &#34;camundaDockerRegistryUrl&#34;,&#10;                &#34;value&#34;: if is defined(camundaDockerRegistryUrl) then camundaDockerRegistryUrl else &#34;unknown&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;camundaDockerRegistryUsername&#34;,&#10;                &#34;value&#34;: if is defined(camundaDockerRegistryUsername) then camundaDockerRegistryUsername else &#34;unknown&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;camundaDockerRegistryPassword&#34;,&#10;                &#34;value&#34;: if is defined(camundaDockerRegistryPassword) then camundaDockerRegistryPassword else &#34;unknown&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;camundaDockerRegistryEmail&#34;,&#10;                &#34;value&#34;: if is defined(camundaDockerRegistryEmail) then camundaDockerRegistryEmail else &#34;unknown&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;dnsLabel&#34;,&#10;                &#34;value&#34;: if (is defined(dnsLabel) and string length(dnsLabel) &#62; 0) then dnsLabel else google.clusterId&#10;              },{&#10;                &#34;name&#34;: &#34;baseDomainName&#34;,&#10;                &#34;value&#34;: if is defined(baseDomainName) then baseDomainName else &#34;nip.io&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;metricsEnabled&#34;,&#10;                &#34;value&#34;: if is defined(metricsEnabled) then metricsEnabled else &#34;false&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;version&#34;,&#10;                &#34;value&#34;: if is defined(version) then version else &#34;latest&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;ingressEnabled&#34;,&#10;                &#34;value&#34;: if is defined(ingressEnabled) then ingressEnabled else &#34;true&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;authEnabled&#34;,&#10;                &#34;value&#34;: if is defined(authEnabled) then authEnabled else &#34;false&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;urlScheme&#34;,&#10;                &#34;value&#34;: if is defined(tlsEnabled) and tlsEnabled=&#34;true&#34; then &#34;https&#34; else &#34;http&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;clusterSize&#34;,&#10;                &#34;value&#34;: if is defined(clusterSize) then clusterSize else &#34;1&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;partitionCount&#34;,&#10;                &#34;value&#34;: if is defined(partitionCount) then partitionCount else &#34;1&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;replicationFactor&#34;,&#10;                &#34;value&#34;: if is defined(replicationFactor) then replicationFactor else &#34;1&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;operateEnabled&#34;,&#10;                &#34;value&#34;: if is defined(operateEnabled) then operateEnabled else &#34;true&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;operateContextPath&#34;,&#10;                &#34;value&#34;: if is defined(operateContextPath) then operateContextPath else &#34;\/operate&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;tasklistEnabled&#34;,&#10;                &#34;value&#34;: if is defined(tasklistEnabled) then tasklistEnabled else &#34;true&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;tasklistContextPath&#34;,&#10;                &#34;value&#34;: if is defined(tasklistContextPath) then tasklistContextPath else &#34;\/tasklist&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;optimizeEnabled&#34;,&#10;                &#34;value&#34;: if is defined(optimizeEnabled) then optimizeEnabled else &#34;false&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;optimizeContextPath&#34;,&#10;                &#34;value&#34;: if is defined(optimizeContextPath) then optimizeContextPath else &#34;\/optimize&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;connectorsEnabled&#34;,&#10;                &#34;value&#34;: if is defined(connectorsEnabled) then connectorsEnabled else &#34;false&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;connectorsContextPath&#34;,&#10;                &#34;value&#34;: if is defined(connectorsContextPath) then connectorsContextPath else &#34;\/connectors&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;modelerEnabled&#34;,&#10;                &#34;value&#34;: if is defined(modelerEnabled) then modelerEnabled else &#34;false&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;modelerContextPath&#34;,&#10;                &#34;value&#34;: if is defined(modelerContextPath) then modelerContextPath else &#34;\/modeler&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;emailAddress&#34;,&#10;                &#34;value&#34;: if is defined(emailAddress) then emailAddress else &#34;david.paroulek@camunda.com&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;dnsManagedZone&#34;,&#10;                &#34;value&#34;: if is defined(dnsManagedZone) then dnsManagedZone else &#34;c8sm&#34;&#10;              },{&#10;                &#34;name&#34;: &#34;tlsEnabled&#34;,&#10;                &#34;value&#34;: if is defined(tlsEnabled) then tlsEnabled else &#34;false&#34;&#10;              }&#10;              ],&#10;              &#34;command&#34;: &#34;sh&#34;,&#10;              &#34;args&#34;: [&#34;-c&#34;, commands]&#10;            }],&#10;            &#34;serviceAccountName&#34;: &#34;dave-p-gcp@camunda-researchanddevelopment.iam.gserviceaccount.com&#34;&#10;          }&#10;        }&#10;      }&#10;    }&#10;  }&#10;}" target="body" />
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultVariable" value="createJobResponse" />
+          <zeebe:header key="errorExpression" value="=if error.code = &#34;409&#34; then&#10;  bpmnError(error.code, error.message)&#10;else&#10;  null" />
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0qn0g84</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ibhgbr</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_088wmip" name="Run Cloud Run Job" zeebe:modelerTemplate="io.camunda.connectors.HttpJson.v2" zeebe:modelerTemplateVersion="1" zeebe:modelerTemplateIcon="data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%2018%2018%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M17.0335%208.99997C17.0335%2013.4475%2013.4281%2017.0529%208.98065%2017.0529C4.53316%2017.0529%200.927765%2013.4475%200.927765%208.99997C0.927765%204.55248%204.53316%200.947083%208.98065%200.947083C13.4281%200.947083%2017.0335%204.55248%2017.0335%208.99997Z%22%20fill%3D%22%23505562%22%2F%3E%0A%3Cpath%20d%3D%22M4.93126%2014.1571L6.78106%203.71471H10.1375C11.1917%203.71471%2011.9824%203.98323%2012.5095%204.52027C13.0465%205.04736%2013.315%205.73358%2013.315%206.57892C13.315%207.44414%2013.0714%208.15522%2012.5841%208.71215C12.1067%209.25913%2011.4553%209.63705%2010.6298%209.8459L12.0619%2014.1571H10.3315L9.03364%2010.0249H7.24351L6.51254%2014.1571H4.93126ZM7.49711%208.59281H9.24248C9.99832%208.59281%2010.5901%208.42374%2011.0177%208.08561C11.4553%207.73753%2011.6741%207.26513%2011.6741%206.66842C11.6741%206.19106%2011.5249%205.81811%2011.2265%205.54959C10.9282%205.27113%2010.4558%205.1319%209.80936%205.1319H8.10874L7.49711%208.59281Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E%0A">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda:http-json:1" />
+        <zeebe:ioMapping>
+          <zeebe:input source="noAuth" target="authentication.type" />
+          <zeebe:input source="post" target="method" />
+          <zeebe:input source="=&#34;https://europe-west9-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/&#34;+google.projectId+&#34;/jobs/&#34;+jobId+&#34;:run&#34;" target="url" />
+          <zeebe:input source="={&#10;  &#34;Authorization&#34;: &#34;Bearer &#34; + google.accessToken,&#10;  &#34;Accept&#34;: &#34;application/json&#34;&#10;}" target="headers" />
+          <zeebe:input source="20" target="connectionTimeoutInSeconds" />
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultVariable" value="runJobResponse" />
+          <zeebe:header key="resultExpression" value="={&#10;  &#34;executionId&#34;: response.body.metadata.name&#10;}" />
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0tion91</bpmn:incoming>
+      <bpmn:outgoing>Flow_0tfi4oy</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="Event_0uh5936" attachedToRef="Activity_02qla2b">
+      <bpmn:outgoing>Flow_0pehk72</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0yb3au3" errorRef="Error_1p897ns" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0pehk72" sourceRef="Event_0uh5936" targetRef="Activity_0juxv0t" />
+    <bpmn:exclusiveGateway id="Gateway_1w3ly3t">
+      <bpmn:incoming>Flow_0ibhgbr</bpmn:incoming>
+      <bpmn:incoming>Flow_0u56sbo</bpmn:incoming>
+      <bpmn:outgoing>Flow_1dg3gn9</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1dg3gn9" sourceRef="Gateway_1w3ly3t" targetRef="Event_07hflc7" />
+    <bpmn:sequenceFlow id="Flow_0u56sbo" sourceRef="Activity_0juxv0t" targetRef="Gateway_1w3ly3t" />
+    <bpmn:sequenceFlow id="Flow_0tfi4oy" sourceRef="Activity_088wmip" targetRef="Activity_0w0ovtq" />
+    <bpmn:serviceTask id="Activity_0ast7yk" name="Get Execution Tasks Status" zeebe:modelerTemplate="io.camunda.connectors.HttpJson.v2" zeebe:modelerTemplateVersion="1" zeebe:modelerTemplateIcon="data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%2018%2018%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M17.0335%208.99997C17.0335%2013.4475%2013.4281%2017.0529%208.98065%2017.0529C4.53316%2017.0529%200.927765%2013.4475%200.927765%208.99997C0.927765%204.55248%204.53316%200.947083%208.98065%200.947083C13.4281%200.947083%2017.0335%204.55248%2017.0335%208.99997Z%22%20fill%3D%22%23505562%22%2F%3E%0A%3Cpath%20d%3D%22M4.93126%2014.1571L6.78106%203.71471H10.1375C11.1917%203.71471%2011.9824%203.98323%2012.5095%204.52027C13.0465%205.04736%2013.315%205.73358%2013.315%206.57892C13.315%207.44414%2013.0714%208.15522%2012.5841%208.71215C12.1067%209.25913%2011.4553%209.63705%2010.6298%209.8459L12.0619%2014.1571H10.3315L9.03364%2010.0249H7.24351L6.51254%2014.1571H4.93126ZM7.49711%208.59281H9.24248C9.99832%208.59281%2010.5901%208.42374%2011.0177%208.08561C11.4553%207.73753%2011.6741%207.26513%2011.6741%206.66842C11.6741%206.19106%2011.5249%205.81811%2011.2265%205.54959C10.9282%205.27113%2010.4558%205.1319%209.80936%205.1319H8.10874L7.49711%208.59281Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E%0A">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda:http-json:1" />
+        <zeebe:ioMapping>
+          <zeebe:input source="noAuth" target="authentication.type" />
+          <zeebe:input source="get" target="method" />
+          <zeebe:input source="=&#34;https://europe-west9-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/&#34;+google.projectId+&#34;/tasks&#34;" target="url" />
+          <zeebe:input source="={&#10;  &#34;labelSelector&#34;: &#34;run.googleapis.com/execution=&#34;+executionId&#10;}" target="queryParameters" />
+          <zeebe:input source="={&#10;  &#34;Authorization&#34;: &#34;Bearer &#34; + google.accessToken,&#10;  &#34;Accept&#34;: &#34;application/json&#34;&#10;}" target="headers" />
+          <zeebe:input source="20" target="connectionTimeoutInSeconds" />
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultVariable" value="getTasksStatusResponse" />
+          <zeebe:header key="resultExpression" value="={&#10;  &#34;jobComplete&#34;: if is defined(response.body.items) &#10;  then every y in (for x in response.body.items return x.status.conditions[item.type = &#34;Completed&#34;][1]) satisfies y.status = &#34;True&#34;&#10;  else false,&#10;  &#34;jobFailed&#34;: if is defined(response.body.items) &#10;  then every y in (for x in response.body.items return x.status.conditions[item.type = &#34;Completed&#34;][1]) satisfies is defined(y.reason) and y.reason = &#34;NonZeroExitCode&#34;&#10;  else false&#10;}" />
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_109i9s9</bpmn:incoming>
+      <bpmn:outgoing>Flow_1wq46xz</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Activity_0w0ovtq" name="Cancel Job">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_0d6ian1" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0tfi4oy</bpmn:incoming>
+      <bpmn:outgoing>Flow_0chxtie</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_0m6xntn">
+      <bpmn:incoming>Flow_0chxtie</bpmn:incoming>
+      <bpmn:incoming>Flow_11h8fre</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ei1jev</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0chxtie" sourceRef="Activity_0w0ovtq" targetRef="Gateway_0m6xntn" />
+    <bpmn:sequenceFlow id="Flow_1h6r932" sourceRef="Event_1sp48q2" targetRef="Gateway_1b5u2xx" />
+    <bpmn:sequenceFlow id="Flow_1wq46xz" sourceRef="Activity_0ast7yk" targetRef="Gateway_0tafuwy" />
+    <bpmn:intermediateCatchEvent id="Event_067jk3p" name="Wait before polling">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:output source="=retries.current + 1" target="retries.current" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0t2z0x3</bpmn:incoming>
+      <bpmn:outgoing>Flow_0f8rgdn</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0mb9e5d">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">=retries.delay</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:exclusiveGateway id="Gateway_1b5u2xx">
+      <bpmn:incoming>Flow_1h6r932</bpmn:incoming>
+      <bpmn:incoming>Flow_0f8rgdn</bpmn:incoming>
+      <bpmn:outgoing>Flow_109i9s9</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_109i9s9" sourceRef="Gateway_1b5u2xx" targetRef="Activity_0ast7yk" />
+    <bpmn:sequenceFlow id="Flow_0f8rgdn" sourceRef="Event_067jk3p" targetRef="Gateway_1b5u2xx" />
+    <bpmn:boundaryEvent id="Event_1sp48q2" cancelActivity="false" attachedToRef="Activity_0w0ovtq">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:output source="=false" target="jobComplete" />
+          <zeebe:output source="={&#10;  &#34;total&#34;: 60,&#10;  &#34;current&#34;: 0,&#10;  &#34;delay&#34;: &#34;PT5S&#34;&#10;}" target="retries" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1h6r932</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_194rkv7">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT2S</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="Event_176mo80" name="End">
+      <bpmn:incoming>Flow_0b3oxlg</bpmn:incoming>
+      <bpmn:terminateEventDefinition id="TerminateEventDefinition_07k1u4c" />
+    </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="Gateway_0tafuwy" name="Job Complete?" default="Flow_1rl3li5">
+      <bpmn:incoming>Flow_1wq46xz</bpmn:incoming>
+      <bpmn:outgoing>Flow_1rl3li5</bpmn:outgoing>
+      <bpmn:outgoing>Flow_11h8fre</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1rl3li5" sourceRef="Gateway_0tafuwy" targetRef="Gateway_0r6njsa" />
+    <bpmn:sequenceFlow id="Flow_11h8fre" name="Yes" sourceRef="Gateway_0tafuwy" targetRef="Gateway_0m6xntn">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=jobComplete = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0b3oxlg" sourceRef="Activity_1b7jiwe" targetRef="Event_176mo80" />
+    <bpmn:sequenceFlow id="Flow_0btgibm" sourceRef="Activity_1s9ausl" targetRef="Event_1kwd8gh" />
+    <bpmn:serviceTask id="Activity_1s9ausl" name="Delete Execution" zeebe:modelerTemplate="io.camunda.connectors.HttpJson.v2" zeebe:modelerTemplateVersion="1" zeebe:modelerTemplateIcon="data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%2018%2018%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M17.0335%208.99997C17.0335%2013.4475%2013.4281%2017.0529%208.98065%2017.0529C4.53316%2017.0529%200.927765%2013.4475%200.927765%208.99997C0.927765%204.55248%204.53316%200.947083%208.98065%200.947083C13.4281%200.947083%2017.0335%204.55248%2017.0335%208.99997Z%22%20fill%3D%22%23505562%22%2F%3E%0A%3Cpath%20d%3D%22M4.93126%2014.1571L6.78106%203.71471H10.1375C11.1917%203.71471%2011.9824%203.98323%2012.5095%204.52027C13.0465%205.04736%2013.315%205.73358%2013.315%206.57892C13.315%207.44414%2013.0714%208.15522%2012.5841%208.71215C12.1067%209.25913%2011.4553%209.63705%2010.6298%209.8459L12.0619%2014.1571H10.3315L9.03364%2010.0249H7.24351L6.51254%2014.1571H4.93126ZM7.49711%208.59281H9.24248C9.99832%208.59281%2010.5901%208.42374%2011.0177%208.08561C11.4553%207.73753%2011.6741%207.26513%2011.6741%206.66842C11.6741%206.19106%2011.5249%205.81811%2011.2265%205.54959C10.9282%205.27113%2010.4558%205.1319%209.80936%205.1319H8.10874L7.49711%208.59281Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E%0A">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda:http-json:1" />
+        <zeebe:ioMapping>
+          <zeebe:input source="noAuth" target="authentication.type" />
+          <zeebe:input source="delete" target="method" />
+          <zeebe:input source="=&#34;https://europe-west9-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/&#34;+google.projectId+&#34;/executions/&#34;+executionId" target="url" />
+          <zeebe:input source="={&#10;  &#34;Authorization&#34;: &#34;Bearer &#34; + google.accessToken,&#10;  &#34;Accept&#34;: &#34;application/json&#34;&#10;}" target="headers" />
+          <zeebe:input source="20" target="connectionTimeoutInSeconds" />
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultVariable" value="deleteExecutionResponse" />
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ei1jev</bpmn:incoming>
+      <bpmn:outgoing>Flow_0btgibm</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_1b7jiwe" name="Delete Job" zeebe:modelerTemplate="io.camunda.connectors.HttpJson.v2" zeebe:modelerTemplateVersion="1" zeebe:modelerTemplateIcon="data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%2018%2018%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M17.0335%208.99997C17.0335%2013.4475%2013.4281%2017.0529%208.98065%2017.0529C4.53316%2017.0529%200.927765%2013.4475%200.927765%208.99997C0.927765%204.55248%204.53316%200.947083%208.98065%200.947083C13.4281%200.947083%2017.0335%204.55248%2017.0335%208.99997Z%22%20fill%3D%22%23505562%22%2F%3E%0A%3Cpath%20d%3D%22M4.93126%2014.1571L6.78106%203.71471H10.1375C11.1917%203.71471%2011.9824%203.98323%2012.5095%204.52027C13.0465%205.04736%2013.315%205.73358%2013.315%206.57892C13.315%207.44414%2013.0714%208.15522%2012.5841%208.71215C12.1067%209.25913%2011.4553%209.63705%2010.6298%209.8459L12.0619%2014.1571H10.3315L9.03364%2010.0249H7.24351L6.51254%2014.1571H4.93126ZM7.49711%208.59281H9.24248C9.99832%208.59281%2010.5901%208.42374%2011.0177%208.08561C11.4553%207.73753%2011.6741%207.26513%2011.6741%206.66842C11.6741%206.19106%2011.5249%205.81811%2011.2265%205.54959C10.9282%205.27113%2010.4558%205.1319%209.80936%205.1319H8.10874L7.49711%208.59281Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E%0A">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda:http-json:1" />
+        <zeebe:ioMapping>
+          <zeebe:input source="noAuth" target="authentication.type" />
+          <zeebe:input source="delete" target="method" />
+          <zeebe:input source="=&#34;https://europe-west9-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/&#34;+google.projectId+&#34;/jobs/&#34;+jobId" target="url" />
+          <zeebe:input source="={&#10;  &#34;Authorization&#34;: &#34;Bearer &#34; + google.accessToken,&#10;  &#34;Accept&#34;: &#34;application/json&#34;&#10;}" target="headers" />
+          <zeebe:input source="20" target="connectionTimeoutInSeconds" />
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultVariable" value="deleteJobResponse" />
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_15b9da5</bpmn:incoming>
+      <bpmn:outgoing>Flow_0b3oxlg</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1ei1jev" sourceRef="Gateway_0m6xntn" targetRef="Activity_1s9ausl" />
+    <bpmn:exclusiveGateway id="Gateway_0jwjojt" name="timeout?" default="Flow_0t2z0x3">
+      <bpmn:incoming>Flow_10f83vs</bpmn:incoming>
+      <bpmn:outgoing>Flow_0t2z0x3</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1fu04t0</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0t2z0x3" sourceRef="Gateway_0jwjojt" targetRef="Event_067jk3p" />
+    <bpmn:endEvent id="Event_1ld670e" name="Job Timed out">
+      <bpmn:incoming>Flow_1fu04t0</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1fu04t0" name="Yes" sourceRef="Gateway_0jwjojt" targetRef="Event_1ld670e">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=retries.current &gt;= retries.total</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0tion91" sourceRef="Event_07hflc7" targetRef="Activity_088wmip" />
+    <bpmn:intermediateCatchEvent id="Event_07hflc7" name="Wait for Job to Create">
+      <bpmn:incoming>Flow_1dg3gn9</bpmn:incoming>
+      <bpmn:outgoing>Flow_0tion91</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_014q6w9">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT15S</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_0qn0g84" sourceRef="Activity_09owpkz" targetRef="Activity_02qla2b" />
+    <bpmn:scriptTask id="Activity_09owpkz" name="Set Job Id">
+      <bpmn:extensionElements>
+        <zeebe:script expression="=if is defined(google.jobId) &#10;then google.jobId &#10;else lower case(&#34;c8sm-&#34; + replace(replace(replace(string(now()), &#34;@Etc/UTC&#34;, &#34;&#34;), &#34;:&#34;, &#34;&#34;), &#34;\.&#34;, &#34;&#34;))" resultVariable="jobId" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_08fbhgb</bpmn:incoming>
+      <bpmn:outgoing>Flow_0qn0g84</bpmn:outgoing>
+    </bpmn:scriptTask>
+    <bpmn:exclusiveGateway id="Gateway_0r6njsa" name="Job Failed?" default="Flow_10f83vs">
+      <bpmn:incoming>Flow_1rl3li5</bpmn:incoming>
+      <bpmn:outgoing>Flow_10f83vs</bpmn:outgoing>
+      <bpmn:outgoing>Flow_01bitc1</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_10f83vs" sourceRef="Gateway_0r6njsa" targetRef="Gateway_0jwjojt" />
+    <bpmn:sequenceFlow id="Flow_01bitc1" sourceRef="Gateway_0r6njsa" targetRef="Event_1fhz453">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=jobFailed = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_1fhz453" name="Job Failed">
+      <bpmn:incoming>Flow_01bitc1</bpmn:incoming>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0fqbas7" errorRef="Error_1ynihti" />
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_15b9da5" sourceRef="Event_1kwd8gh" targetRef="Activity_1b7jiwe" />
+    <bpmn:intermediateCatchEvent id="Event_1kwd8gh" name="Wait for execution to delete">
+      <bpmn:incoming>Flow_0btgibm</bpmn:incoming>
+      <bpmn:outgoing>Flow_15b9da5</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0z1enge">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT10S</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:textAnnotation id="TextAnnotation_1de0itk">
+      <bpmn:text>Required inputs: google.clientId, secrets.GCP_OAUTH2_CLIENT_SECRET, google.projectId, google.clusterId, google.accessToken, google.refreshToken, google.zoneId,google.jobId,command</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0vv0q3f" sourceRef="StartEvent_1" targetRef="TextAnnotation_1de0itk" />
+  </bpmn:process>
+  <bpmn:error id="Error_1p897ns" name="Error_409" errorCode="409" />
+  <bpmn:error id="Error_1ynihti" name="Error_cloudRunJobFailed" errorCode="Error_cloudRunJobFailed" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_cloudRunJob">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="182" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="188" y="255" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1raq7rr_di" bpmnElement="Activity_06cr4mh">
+        <dc:Bounds x="270" y="190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1thlj64_di" bpmnElement="Activity_0juxv0t">
+        <dc:Bounds x="530" y="60" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0cm6ytj_di" bpmnElement="Activity_02qla2b">
+        <dc:Bounds x="530" y="190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1w3k4nx_di" bpmnElement="Activity_088wmip">
+        <dc:Bounds x="820" y="190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1w3ly3t_di" bpmnElement="Gateway_1w3ly3t" isMarkerVisible="true">
+        <dc:Bounds x="675" y="205" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0hnlpjo_di" bpmnElement="Activity_0ast7yk">
+        <dc:Bounds x="1070" y="300" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ht6mqc_di" bpmnElement="Activity_0w0ovtq">
+        <dc:Bounds x="960" y="190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0m6xntn_di" bpmnElement="Gateway_0m6xntn" isMarkerVisible="true">
+        <dc:Bounds x="1205" y="205" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1163" y="181" width="74" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0wqkene_di" bpmnElement="Event_067jk3p">
+        <dc:Bounds x="1112" y="482" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1103" y="525" width="56" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1b5u2xx_di" bpmnElement="Gateway_1b5u2xx" isMarkerVisible="true">
+        <dc:Bounds x="985" y="315" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1lrk0oy_di" bpmnElement="Event_176mo80">
+        <dc:Bounds x="1672" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1680" y="255" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0tafuwy_di" bpmnElement="Gateway_0tafuwy" isMarkerVisible="true">
+        <dc:Bounds x="1205" y="315" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1253" y="313" width="74" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1oewjfs_di" bpmnElement="Activity_1s9ausl">
+        <dc:Bounds x="1310" y="190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1kvdnkh_di" bpmnElement="Activity_1b7jiwe">
+        <dc:Bounds x="1530" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0jwjojt_di" bpmnElement="Gateway_0jwjojt" isMarkerVisible="true">
+        <dc:Bounds x="1205" y="475" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1209" y="532" width="43" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ld670e_di" bpmnElement="Event_1ld670e">
+        <dc:Bounds x="1342" y="482" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1325" y="525" width="70" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_19gl4w8_di" bpmnElement="Event_07hflc7">
+        <dc:Bounds x="752" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="735" y="255" width="71" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1q0nh4n_di" bpmnElement="Activity_09owpkz">
+        <dc:Bounds x="400" y="190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0r6njsa_di" bpmnElement="Gateway_0r6njsa" isMarkerVisible="true">
+        <dc:Bounds x="1205" y="395" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1122" y="410" width="57" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0p81ke1_di" bpmnElement="Event_1fhz453">
+        <dc:Bounds x="1342" y="402" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1335" y="445" width="51" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_10tz4o2_di" bpmnElement="Event_1kwd8gh">
+        <dc:Bounds x="1452" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1427" y="255" width="88" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1de0itk_di" bpmnElement="TextAnnotation_1de0itk">
+        <dc:Bounds x="130" y="90" width="259.9999694824219" height="83.98896789550781" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_14ht8wj_di" bpmnElement="Event_1sp48q2">
+        <dc:Bounds x="992" y="252" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_15q8ysj_di" bpmnElement="Event_0uh5936">
+        <dc:Bounds x="582" y="172" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_05vsyqz_di" bpmnElement="Flow_05vsyqz">
+        <di:waypoint x="218" y="230" />
+        <di:waypoint x="270" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08fbhgb_di" bpmnElement="Flow_08fbhgb">
+        <di:waypoint x="370" y="230" />
+        <di:waypoint x="400" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ibhgbr_di" bpmnElement="Flow_0ibhgbr">
+        <di:waypoint x="630" y="230" />
+        <di:waypoint x="675" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0pehk72_di" bpmnElement="Flow_0pehk72">
+        <di:waypoint x="600" y="172" />
+        <di:waypoint x="600" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1dg3gn9_di" bpmnElement="Flow_1dg3gn9">
+        <di:waypoint x="725" y="230" />
+        <di:waypoint x="752" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0u56sbo_di" bpmnElement="Flow_0u56sbo">
+        <di:waypoint x="630" y="100" />
+        <di:waypoint x="700" y="100" />
+        <di:waypoint x="700" y="205" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0tfi4oy_di" bpmnElement="Flow_0tfi4oy">
+        <di:waypoint x="920" y="230" />
+        <di:waypoint x="960" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0chxtie_di" bpmnElement="Flow_0chxtie">
+        <di:waypoint x="1060" y="230" />
+        <di:waypoint x="1205" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1h6r932_di" bpmnElement="Flow_1h6r932">
+        <di:waypoint x="1010" y="288" />
+        <di:waypoint x="1010" y="315" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1wq46xz_di" bpmnElement="Flow_1wq46xz">
+        <di:waypoint x="1170" y="340" />
+        <di:waypoint x="1205" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_109i9s9_di" bpmnElement="Flow_109i9s9">
+        <di:waypoint x="1035" y="340" />
+        <di:waypoint x="1070" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0f8rgdn_di" bpmnElement="Flow_0f8rgdn">
+        <di:waypoint x="1112" y="500" />
+        <di:waypoint x="1010" y="500" />
+        <di:waypoint x="1010" y="365" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1rl3li5_di" bpmnElement="Flow_1rl3li5">
+        <di:waypoint x="1230" y="365" />
+        <di:waypoint x="1230" y="395" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11h8fre_di" bpmnElement="Flow_11h8fre">
+        <di:waypoint x="1230" y="315" />
+        <di:waypoint x="1230" y="255" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1236" y="282" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0b3oxlg_di" bpmnElement="Flow_0b3oxlg">
+        <di:waypoint x="1630" y="230" />
+        <di:waypoint x="1672" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0btgibm_di" bpmnElement="Flow_0btgibm">
+        <di:waypoint x="1410" y="230" />
+        <di:waypoint x="1452" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ei1jev_di" bpmnElement="Flow_1ei1jev">
+        <di:waypoint x="1255" y="230" />
+        <di:waypoint x="1310" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0t2z0x3_di" bpmnElement="Flow_0t2z0x3">
+        <di:waypoint x="1205" y="500" />
+        <di:waypoint x="1148" y="500" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fu04t0_di" bpmnElement="Flow_1fu04t0">
+        <di:waypoint x="1255" y="500" />
+        <di:waypoint x="1342" y="500" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1290" y="482" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0tion91_di" bpmnElement="Flow_0tion91">
+        <di:waypoint x="788" y="230" />
+        <di:waypoint x="820" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qn0g84_di" bpmnElement="Flow_0qn0g84">
+        <di:waypoint x="500" y="230" />
+        <di:waypoint x="530" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10f83vs_di" bpmnElement="Flow_10f83vs">
+        <di:waypoint x="1230" y="445" />
+        <di:waypoint x="1230" y="475" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_01bitc1_di" bpmnElement="Flow_01bitc1">
+        <di:waypoint x="1255" y="420" />
+        <di:waypoint x="1342" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15b9da5_di" bpmnElement="Flow_15b9da5">
+        <di:waypoint x="1488" y="230" />
+        <di:waypoint x="1530" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0vv0q3f_di" bpmnElement="Association_0vv0q3f">
+        <di:waypoint x="196" y="213" />
+        <di:waypoint x="186" y="174" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

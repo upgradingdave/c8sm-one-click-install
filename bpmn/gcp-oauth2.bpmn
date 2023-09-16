@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="cbae99f" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.3.0" camunda:diagramRelationId="782b80c8-efe7-4fc8-988d-30c8c7ce967a">
+  <bpmn:process id="Process_gcpOauth2" name="Google Cloud OAuth2" isExecutable="true">
+    <bpmn:extensionElements>
+      <zeebe:userTaskForm id="userTaskForm_3aumjk9">{
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.3.0",
+  "exporter": {
+    "name": "Camunda Web Modeler",
+    "version": "78eb3d7"
+  },
+  "schemaVersion": 10,
+  "components": [
+    {
+      "text": "#### Click &lt;a target=\"_gcpSignin\" href=\"{{field_oauthUrl}}\"&gt;HERE&lt;/a&gt; to sign into Google\n&lt;br/&gt;\nThis app will make API requests to Google Cloud on your behalf. After you sign in, choose **Allow**. Finally, copy and paste the **authorization code** below.\n&lt;br/&gt;\n\n\n\n\n",
+      "type": "text",
+      "id": "Field_1sc8kbb",
+      "properties": { },
+      "layout": {
+        "row": "Row_02mpplz"
+      }
+    },
+    {
+      "label": "Authorization Code",
+      "type": "textfield",
+      "id": "Field_165uco1",
+      "key": "field_authorizationCode",
+      "description": "Copy and paste Authorization Code Here",
+      "validate": {
+        "minLength": 5,
+        "required": true
+      },
+      "layout": {
+        "row": "Row_10156ib"
+      }
+    }
+  ],
+  "type": "default",
+  "id": "Form_signinWithGoogle"
+}</zeebe:userTaskForm>
+    </bpmn:extensionElements>
+    <bpmn:startEvent id="StartEvent_1" name="Start">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:output source="={&#10;  total: 3,&#10;  current: 0&#10;}" target="retries" />
+          <zeebe:output source="=if is defined(gcpClientId) then gcpClientId else &#34;291005901394-60d88q0qhsopc4rmj817oldolqer8v1c.apps.googleusercontent.com&#34;" target="gcpClientId" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_0w9gpwr</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="Gateway_1ljlt0s" name="Bearer access token available?" default="Flow_0jplslt">
+      <bpmn:incoming>Flow_00g3ib6</bpmn:incoming>
+      <bpmn:outgoing>Flow_0jplslt</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1bzde05</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0w9gpwr" sourceRef="StartEvent_1" targetRef="Gateway_131hnf5" />
+    <bpmn:exclusiveGateway id="Gateway_1ezp676" name="Refresh token available?" default="Flow_1u22iwi">
+      <bpmn:incoming>Flow_0jplslt</bpmn:incoming>
+      <bpmn:outgoing>Flow_1p8b45v</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1u22iwi</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0jplslt" name="No" sourceRef="Gateway_1ljlt0s" targetRef="Gateway_1ezp676" />
+    <bpmn:sequenceFlow id="Flow_1bzde05" name="Yes" sourceRef="Gateway_1ljlt0s" targetRef="Gateway_00uz8jv">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=is defined(gcpAccessToken) and not (gcpAccessToken = null)</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1p8b45v" name="Yes" sourceRef="Gateway_1ezp676" targetRef="Activity_0qk0q43">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=is defined(gcpRefreshToken) and not (gcpRefreshToken = null)</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1u22iwi" name="No" sourceRef="Gateway_1ezp676" targetRef="Gateway_1d4uzkq" />
+    <bpmn:userTask id="Activity_1ag81n0" name="Sign into Google">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;https://accounts.google.com/o/oauth2/v2/auth?client_id=&#34;+gcpClientId+&#34;&#38;redirect_uri=urn:ietf:wg:oauth:2.0:oob&#38;response_type=code&#38;scope=https://www.googleapis.com/auth/cloud-platform&#34;" target="field_oauthUrl" />
+          <zeebe:output source="=field_authorizationCode" target="gcpAuthorizationCode" />
+        </zeebe:ioMapping>
+        <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_3aumjk9" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ba58me</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zh5btx</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Activity_0qk0q43" name="Exchange refresh token" zeebe:modelerTemplate="io.camunda.connectors.HttpJson.v2" zeebe:modelerTemplateVersion="1" zeebe:modelerTemplateIcon="data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%2018%2018%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M17.0335%208.99997C17.0335%2013.4475%2013.4281%2017.0529%208.98065%2017.0529C4.53316%2017.0529%200.927765%2013.4475%200.927765%208.99997C0.927765%204.55248%204.53316%200.947083%208.98065%200.947083C13.4281%200.947083%2017.0335%204.55248%2017.0335%208.99997Z%22%20fill%3D%22%23505562%22%2F%3E%0A%3Cpath%20d%3D%22M4.93126%2014.1571L6.78106%203.71471H10.1375C11.1917%203.71471%2011.9824%203.98323%2012.5095%204.52027C13.0465%205.04736%2013.315%205.73358%2013.315%206.57892C13.315%207.44414%2013.0714%208.15522%2012.5841%208.71215C12.1067%209.25913%2011.4553%209.63705%2010.6298%209.8459L12.0619%2014.1571H10.3315L9.03364%2010.0249H7.24351L6.51254%2014.1571H4.93126ZM7.49711%208.59281H9.24248C9.99832%208.59281%2010.5901%208.42374%2011.0177%208.08561C11.4553%207.73753%2011.6741%207.26513%2011.6741%206.66842C11.6741%206.19106%2011.5249%205.81811%2011.2265%205.54959C10.9282%205.27113%2010.4558%205.1319%209.80936%205.1319H8.10874L7.49711%208.59281Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E%0A">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda:http-json:1" />
+        <zeebe:ioMapping>
+          <zeebe:input source="noAuth" target="authentication.type" />
+          <zeebe:input source="post" target="method" />
+          <zeebe:input source="https://accounts.google.com/o/oauth2/token" target="url" />
+          <zeebe:input source="20" target="connectionTimeoutInSeconds" />
+          <zeebe:input source="={&#10;  &#34;refresh_token&#34;: google.refreshToken,&#10;  &#34;client_id&#34;: gcpClientId,&#10;  &#34;client_secret&#34;: &#34;secrets.GCP_OAUTH2_CLIENT_SECRET&#34;,&#10;  &#34;redirect_uri&#34;: &#34;urn:ietf:wg:oauth:2.0:oob&#34;,&#10;  &#34;grant_type&#34;: &#34;refresh_token&#34;&#10;}" target="body" />
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultVariable" value="gcpRefreshTokenResponse" />
+          <zeebe:header key="resultExpression" value="={  &#10;  &#34;gcpAccessToken&#34;: if is defined (response.body.access_token) then response.body.access_token else null&#10;}" />
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1p8b45v</bpmn:incoming>
+      <bpmn:outgoing>Flow_1g2gd9s</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0zh5btx" sourceRef="Activity_1ag81n0" targetRef="Gateway_0axv6yk" />
+    <bpmn:serviceTask id="Activity_1d3vo3t" name="Exchange authorization token" zeebe:modelerTemplate="io.camunda.connectors.HttpJson.v2" zeebe:modelerTemplateVersion="1" zeebe:modelerTemplateIcon="data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%2018%2018%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M17.0335%208.99997C17.0335%2013.4475%2013.4281%2017.0529%208.98065%2017.0529C4.53316%2017.0529%200.927765%2013.4475%200.927765%208.99997C0.927765%204.55248%204.53316%200.947083%208.98065%200.947083C13.4281%200.947083%2017.0335%204.55248%2017.0335%208.99997Z%22%20fill%3D%22%23505562%22%2F%3E%0A%3Cpath%20d%3D%22M4.93126%2014.1571L6.78106%203.71471H10.1375C11.1917%203.71471%2011.9824%203.98323%2012.5095%204.52027C13.0465%205.04736%2013.315%205.73358%2013.315%206.57892C13.315%207.44414%2013.0714%208.15522%2012.5841%208.71215C12.1067%209.25913%2011.4553%209.63705%2010.6298%209.8459L12.0619%2014.1571H10.3315L9.03364%2010.0249H7.24351L6.51254%2014.1571H4.93126ZM7.49711%208.59281H9.24248C9.99832%208.59281%2010.5901%208.42374%2011.0177%208.08561C11.4553%207.73753%2011.6741%207.26513%2011.6741%206.66842C11.6741%206.19106%2011.5249%205.81811%2011.2265%205.54959C10.9282%205.27113%2010.4558%205.1319%209.80936%205.1319H8.10874L7.49711%208.59281Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E%0A">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda:http-json:1" />
+        <zeebe:ioMapping>
+          <zeebe:input source="noAuth" target="authentication.type" />
+          <zeebe:input source="post" target="method" />
+          <zeebe:input source="https://accounts.google.com/o/oauth2/token" target="url" />
+          <zeebe:input source="20" target="connectionTimeoutInSeconds" />
+          <zeebe:input source="={&#10;  &#34;code&#34;: gcpAuthorizationCode,&#10;  &#34;client_id&#34;: gcpClientId,&#10;  &#34;client_secret&#34;: &#34;secrets.GCP_OAUTH2_CLIENT_SECRET&#34;,&#10;  &#34;redirect_uri&#34;: &#34;urn:ietf:wg:oauth:2.0:oob&#34;,&#10;  &#34;grant_type&#34;: &#34;authorization_code&#34;&#10;}" target="body" />
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultVariable" value="gcpAccessTokenResponse" />
+          <zeebe:header key="resultExpression" value="={  &#10;  &#34;gcpAccessToken&#34;: response.body.access_token,  &#10;  &#34;gcpRefreshToken&#34;: response.body.refresh_token&#10;}" />
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0qrpuyg</bpmn:incoming>
+      <bpmn:outgoing>Flow_0qcl71s</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1g2gd9s" sourceRef="Activity_0qk0q43" targetRef="Gateway_00uz8jv" />
+    <bpmn:sequenceFlow id="Flow_0qcl71s" sourceRef="Activity_1d3vo3t" targetRef="Gateway_00uz8jv" />
+    <bpmn:exclusiveGateway id="Gateway_00uz8jv">
+      <bpmn:incoming>Flow_1g2gd9s</bpmn:incoming>
+      <bpmn:incoming>Flow_1bzde05</bpmn:incoming>
+      <bpmn:incoming>Flow_0qcl71s</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xfxn3v</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1xfxn3v" sourceRef="Gateway_00uz8jv" targetRef="Activity_1oa548n" />
+    <bpmn:endEvent id="Event_0gge2g1" name="End (success)">
+      <bpmn:incoming>Flow_0eh5qaj</bpmn:incoming>
+      <bpmn:terminateEventDefinition id="TerminateEventDefinition_0u0naw6" />
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0eh5qaj" sourceRef="Activity_1oa548n" targetRef="Event_0gge2g1" />
+    <bpmn:serviceTask id="Activity_1oa548n" name="Check Access Token" zeebe:modelerTemplate="io.camunda.connectors.HttpJson.v2" zeebe:modelerTemplateVersion="1" zeebe:modelerTemplateIcon="data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%2018%2018%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M17.0335%208.99997C17.0335%2013.4475%2013.4281%2017.0529%208.98065%2017.0529C4.53316%2017.0529%200.927765%2013.4475%200.927765%208.99997C0.927765%204.55248%204.53316%200.947083%208.98065%200.947083C13.4281%200.947083%2017.0335%204.55248%2017.0335%208.99997Z%22%20fill%3D%22%23505562%22%2F%3E%0A%3Cpath%20d%3D%22M4.93126%2014.1571L6.78106%203.71471H10.1375C11.1917%203.71471%2011.9824%203.98323%2012.5095%204.52027C13.0465%205.04736%2013.315%205.73358%2013.315%206.57892C13.315%207.44414%2013.0714%208.15522%2012.5841%208.71215C12.1067%209.25913%2011.4553%209.63705%2010.6298%209.8459L12.0619%2014.1571H10.3315L9.03364%2010.0249H7.24351L6.51254%2014.1571H4.93126ZM7.49711%208.59281H9.24248C9.99832%208.59281%2010.5901%208.42374%2011.0177%208.08561C11.4553%207.73753%2011.6741%207.26513%2011.6741%206.66842C11.6741%206.19106%2011.5249%205.81811%2011.2265%205.54959C10.9282%205.27113%2010.4558%205.1319%209.80936%205.1319H8.10874L7.49711%208.59281Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E%0A">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda:http-json:1" />
+        <zeebe:ioMapping>
+          <zeebe:input source="noAuth" target="authentication.type" />
+          <zeebe:input source="get" target="method" />
+          <zeebe:input source="https://container.googleapis.com/v1/projects/camunda-researchanddevelopment/locations/us-central1-a/serverConfig" target="url" />
+          <zeebe:input source="={&#10;  &#34;Authorization&#34;: &#34;Bearer &#34; + gcpAccessToken,&#10;  &#34;Accept&#34;: &#34;application/json&#34;&#10;}" target="headers" />
+          <zeebe:input source="20" target="connectionTimeoutInSeconds" />
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultVariable" value="checkAccessTokenResponse" />
+          <zeebe:header key="errorExpression" value="=if is defined(error) then bpmnError(&#34;gcpError&#34;, error.message) else null" />
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1xfxn3v</bpmn:incoming>
+      <bpmn:outgoing>Flow_0eh5qaj</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="Event_0ndgj8c" attachedToRef="Activity_1oa548n">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:output source="=null" target="gcpAccessToken" />
+          <zeebe:output source="=retries.current + 1" target="retries.current" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_0tl6h4j</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1h9kijx" errorRef="Error_1m7l6lh" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0tl6h4j" sourceRef="Event_0ndgj8c" targetRef="Gateway_02rf5b9" />
+    <bpmn:intermediateCatchEvent id="Event_1cj3yx2" name="Wait before retry">
+      <bpmn:incoming>Flow_1yl1hlm</bpmn:incoming>
+      <bpmn:outgoing>Flow_0z9ag5a</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1veaawz">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT10S</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:exclusiveGateway id="Gateway_02rf5b9" name="Retry?" default="Flow_0bjdrjj">
+      <bpmn:incoming>Flow_0tl6h4j</bpmn:incoming>
+      <bpmn:outgoing>Flow_0bjdrjj</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0zo4c90</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0bjdrjj" sourceRef="Gateway_02rf5b9" targetRef="Gateway_1hh5ppy" />
+    <bpmn:sequenceFlow id="Flow_0zo4c90" name="max retries" sourceRef="Gateway_02rf5b9" targetRef="Event_1t4krlz">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=retries.current &gt;= retries.total</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_1t4krlz" name="End (fail)">
+      <bpmn:incoming>Flow_0zo4c90</bpmn:incoming>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1am4rad" errorRef="Error_1m7l6lh" />
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0z9ag5a" sourceRef="Event_1cj3yx2" targetRef="Gateway_0zihrze" />
+    <bpmn:exclusiveGateway id="Gateway_131hnf5">
+      <bpmn:incoming>Flow_0w9gpwr</bpmn:incoming>
+      <bpmn:incoming>Flow_12sjyx5</bpmn:incoming>
+      <bpmn:outgoing>Flow_00g3ib6</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_00g3ib6" sourceRef="Gateway_131hnf5" targetRef="Gateway_1ljlt0s" />
+    <bpmn:exclusiveGateway id="Gateway_1hh5ppy" name="Wait before retry?" default="Flow_1yl1hlm">
+      <bpmn:incoming>Flow_0bjdrjj</bpmn:incoming>
+      <bpmn:outgoing>Flow_1yl1hlm</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0zeqze8</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1yl1hlm" sourceRef="Gateway_1hh5ppy" targetRef="Event_1cj3yx2" />
+    <bpmn:exclusiveGateway id="Gateway_0zihrze">
+      <bpmn:incoming>Flow_0z9ag5a</bpmn:incoming>
+      <bpmn:incoming>Flow_0zeqze8</bpmn:incoming>
+      <bpmn:outgoing>Flow_12sjyx5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_12sjyx5" sourceRef="Gateway_0zihrze" targetRef="Gateway_131hnf5" />
+    <bpmn:sequenceFlow id="Flow_0zeqze8" name="don&#39;t wait" sourceRef="Gateway_1hh5ppy" targetRef="Gateway_0zihrze">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=retries.current = 1</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="Gateway_1d4uzkq" name="Authorization Code available?" default="Flow_1ba58me">
+      <bpmn:incoming>Flow_1u22iwi</bpmn:incoming>
+      <bpmn:outgoing>Flow_0frlp2y</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1ba58me</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0frlp2y" name="Yes" sourceRef="Gateway_1d4uzkq" targetRef="Gateway_0axv6yk">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=is defined(gcpAuthorizationCode) and not (gcpAuthorizationCode = null)</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1ba58me" sourceRef="Gateway_1d4uzkq" targetRef="Activity_1ag81n0" />
+    <bpmn:exclusiveGateway id="Gateway_0axv6yk">
+      <bpmn:incoming>Flow_0zh5btx</bpmn:incoming>
+      <bpmn:incoming>Flow_0frlp2y</bpmn:incoming>
+      <bpmn:outgoing>Flow_0qrpuyg</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0qrpuyg" sourceRef="Gateway_0axv6yk" targetRef="Activity_1d3vo3t" />
+    <bpmn:textAnnotation id="TextAnnotation_02t8acd">
+      <bpmn:text>Required inputs: gcpClientId, secrets.GCP_OAUTH2_CLIENT_SECRET  Optional inputs: gcpAccessToken, gcpRefreshToken, gcpAuthorizationToken</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_01tzaqh" sourceRef="StartEvent_1" targetRef="TextAnnotation_02t8acd" />
+    <bpmn:textAnnotation id="TextAnnotation_05urcpv">
+      <bpmn:text>Outputs: gcpAccessToken, gcpRefreshToken</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_09wihw0" sourceRef="Event_0gge2g1" targetRef="TextAnnotation_05urcpv" />
+  </bpmn:process>
+  <bpmn:error id="Error_1m7l6lh" name="GCP Error" errorCode="gcpError" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_gcpOauth2">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="290" y="160" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="296" y="203" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1ljlt0s_di" bpmnElement="Gateway_1ljlt0s" isMarkerVisible="true">
+        <dc:Bounds x="465" y="153" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="450" y="204" width="80" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1ezp676_di" bpmnElement="Gateway_1ezp676" isMarkerVisible="true">
+        <dc:Bounds x="605" y="153" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="595" y="116" width="69" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_122wgr0_di" bpmnElement="Activity_1ag81n0">
+        <dc:Bounds x="580" y="320" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ud6rfc_di" bpmnElement="Activity_0qk0q43">
+        <dc:Bounds x="730" y="138" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_068v1gt_di" bpmnElement="Activity_1d3vo3t">
+        <dc:Bounds x="790" y="320" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_00uz8jv_di" bpmnElement="Gateway_00uz8jv" isMarkerVisible="true">
+        <dc:Bounds x="875" y="153" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0is2g1t_di" bpmnElement="Event_0gge2g1">
+        <dc:Bounds x="1172" y="160" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1157" y="203" width="70" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1dygq71_di" bpmnElement="Activity_1oa548n">
+        <dc:Bounds x="990" y="138" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1opmzbj_di" bpmnElement="Event_1cj3yx2">
+        <dc:Bounds x="792" y="432" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="770" y="475" width="81" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_02rf5b9_di" bpmnElement="Gateway_02rf5b9" isMarkerVisible="true">
+        <dc:Bounds x="1035" y="335" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1003" y="333" width="33" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0q3wccb_di" bpmnElement="Event_1t4krlz">
+        <dc:Bounds x="1172" y="342" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1170" y="385" width="45" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_131hnf5_di" bpmnElement="Gateway_131hnf5" isMarkerVisible="true">
+        <dc:Bounds x="375" y="153" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1hh5ppy_di" bpmnElement="Gateway_1hh5ppy" isMarkerVisible="true">
+        <dc:Bounds x="925" y="425" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="906" y="401" width="88" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0zihrze_di" bpmnElement="Gateway_0zihrze" isMarkerVisible="true">
+        <dc:Bounds x="645" y="425" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1d4uzkq_di" bpmnElement="Gateway_1d4uzkq" isMarkerVisible="true">
+        <dc:Bounds x="605" y="235" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="522" y="256" width="79" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0axv6yk_di" bpmnElement="Gateway_0axv6yk" isMarkerVisible="true">
+        <dc:Bounds x="705" y="335" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_02t8acd_di" bpmnElement="TextAnnotation_02t8acd">
+        <dc:Bounds x="160" y="39" width="260" height="82" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_05urcpv_di" bpmnElement="TextAnnotation_05urcpv">
+        <dc:Bounds x="1180" y="73" width="220" height="48" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0cewvch_di" bpmnElement="Event_0ndgj8c">
+        <dc:Bounds x="1042" y="200" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0w9gpwr_di" bpmnElement="Flow_0w9gpwr">
+        <di:waypoint x="326" y="178" />
+        <di:waypoint x="375" y="178" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jplslt_di" bpmnElement="Flow_0jplslt">
+        <di:waypoint x="515" y="178" />
+        <di:waypoint x="605" y="178" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="554" y="160" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1bzde05_di" bpmnElement="Flow_1bzde05">
+        <di:waypoint x="490" y="153" />
+        <di:waypoint x="490" y="80" />
+        <di:waypoint x="900" y="80" />
+        <di:waypoint x="900" y="153" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="501" y="128" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1p8b45v_di" bpmnElement="Flow_1p8b45v">
+        <di:waypoint x="655" y="178" />
+        <di:waypoint x="730" y="178" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="684" y="160" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1u22iwi_di" bpmnElement="Flow_1u22iwi">
+        <di:waypoint x="630" y="203" />
+        <di:waypoint x="630" y="235" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="638" y="211" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zh5btx_di" bpmnElement="Flow_0zh5btx">
+        <di:waypoint x="680" y="360" />
+        <di:waypoint x="705" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1g2gd9s_di" bpmnElement="Flow_1g2gd9s">
+        <di:waypoint x="830" y="178" />
+        <di:waypoint x="875" y="178" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qcl71s_di" bpmnElement="Flow_0qcl71s">
+        <di:waypoint x="840" y="320" />
+        <di:waypoint x="840" y="262" />
+        <di:waypoint x="900" y="262" />
+        <di:waypoint x="900" y="203" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xfxn3v_di" bpmnElement="Flow_1xfxn3v">
+        <di:waypoint x="925" y="178" />
+        <di:waypoint x="990" y="178" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0eh5qaj_di" bpmnElement="Flow_0eh5qaj">
+        <di:waypoint x="1090" y="178" />
+        <di:waypoint x="1172" y="178" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0tl6h4j_di" bpmnElement="Flow_0tl6h4j">
+        <di:waypoint x="1060" y="236" />
+        <di:waypoint x="1060" y="335" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bjdrjj_di" bpmnElement="Flow_0bjdrjj">
+        <di:waypoint x="1060" y="385" />
+        <di:waypoint x="1060" y="450" />
+        <di:waypoint x="975" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zo4c90_di" bpmnElement="Flow_0zo4c90">
+        <di:waypoint x="1085" y="360" />
+        <di:waypoint x="1172" y="360" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1103" y="342" width="55" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0z9ag5a_di" bpmnElement="Flow_0z9ag5a">
+        <di:waypoint x="792" y="450" />
+        <di:waypoint x="695" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_00g3ib6_di" bpmnElement="Flow_00g3ib6">
+        <di:waypoint x="425" y="178" />
+        <di:waypoint x="465" y="178" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1yl1hlm_di" bpmnElement="Flow_1yl1hlm">
+        <di:waypoint x="925" y="450" />
+        <di:waypoint x="828" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12sjyx5_di" bpmnElement="Flow_12sjyx5">
+        <di:waypoint x="645" y="450" />
+        <di:waypoint x="400" y="450" />
+        <di:waypoint x="400" y="203" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zeqze8_di" bpmnElement="Flow_0zeqze8">
+        <di:waypoint x="950" y="475" />
+        <di:waypoint x="950" y="510" />
+        <di:waypoint x="670" y="510" />
+        <di:waypoint x="670" y="475" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="956" y="480" width="47" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0frlp2y_di" bpmnElement="Flow_0frlp2y">
+        <di:waypoint x="655" y="260" />
+        <di:waypoint x="730" y="260" />
+        <di:waypoint x="730" y="335" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="688" y="238" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ba58me_di" bpmnElement="Flow_1ba58me">
+        <di:waypoint x="630" y="285" />
+        <di:waypoint x="630" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qrpuyg_di" bpmnElement="Flow_0qrpuyg">
+        <di:waypoint x="755" y="360" />
+        <di:waypoint x="790" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_01tzaqh_di" bpmnElement="Association_01tzaqh">
+        <di:waypoint x="297" y="164" />
+        <di:waypoint x="261" y="121" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_09wihw0_di" bpmnElement="Association_09wihw0">
+        <di:waypoint x="1202" y="165" />
+        <di:waypoint x="1244" y="121" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

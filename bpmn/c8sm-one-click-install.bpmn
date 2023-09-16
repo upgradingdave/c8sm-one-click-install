@@ -1,0 +1,1043 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="cbae99f" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.3.0" camunda:diagramRelationId="7c66923d-d594-47a4-8ce0-46ccdc3f0d2d">
+  <bpmn:process id="c8sm-on-click-install" name="C8SM - One Click Install" isExecutable="true">
+    <bpmn:extensionElements>
+      <zeebe:userTaskForm id="userTaskForm_1tmikmk">{
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.3.0",
+  "exporter": {
+    "name": "Camunda Web Modeler",
+    "version": "66b1756"
+  },
+  "schemaVersion": 10,
+  "components": [
+    {
+      "text": "# Installation Form",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_0f9vj0o",
+        "columns": null
+      },
+      "id": "Field_1xu813w"
+    },
+    {
+      "text": "## Google Cloud Authentication\n",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_1jah72q",
+        "columns": null
+      },
+      "id": "Field_0sgnb5p"
+    },
+    {
+      "values": [
+        {
+          "label": "Access / Refresh Token",
+          "value": "accessToken"
+        },
+        {
+          "label": "Authorization Code",
+          "value": "authCode"
+        }
+      ],
+      "label": "Type of Authentication",
+      "type": "select",
+      "layout": {
+        "row": "Row_04dvbl2",
+        "columns": null
+      },
+      "id": "Field_1s0vwfu",
+      "key": "authType",
+      "defaultValue": "accessToken",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "text": "#### Click &lt;a target=\"_gcpSignin\" href=\"https://accounts.google.com/o/oauth2/v2/auth?client_id=291005901394-60d88q0qhsopc4rmj817oldolqer8v1c.apps.googleusercontent.com&amp;redirect_uri=urn:ietf:wg:oauth:2.0:oob&amp;response_type=code&amp;scope=https://www.googleapis.com/auth/cloud-platform\"&gt;HERE&lt;/a&gt; to sign into Google\nThis app will make API requests to Google Cloud on your behalf. After you sign in, choose **Allow**. Finally, copy and paste the **authorization code** below.\n",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_1uq0oz8",
+        "columns": null
+      },
+      "id": "Field_12k47q4",
+      "conditional": {
+        "hide": "=authType != \"authCode\""
+      }
+    },
+    {
+      "label": "Authorization Code",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1v27xno",
+        "columns": null
+      },
+      "id": "Field_065cfyb",
+      "key": "authorizationCode",
+      "description": "Copy and paste the Authorization Code you obtained after signing in to Google ",
+      "conditional": {
+        "hide": "=authType != \"authCode\""
+      },
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Access Token",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1lgewya",
+        "columns": null
+      },
+      "id": "Field_0tjhgp2",
+      "key": "accessToken",
+      "defaultValue": "secrets.GOOGLE_ACCESS_TOKEN",
+      "validate": {
+        "required": true
+      },
+      "description": "The access token linked to your Google account",
+      "conditional": {
+        "hide": "=authType != \"accessToken\""
+      }
+    },
+    {
+      "label": "Refresh Token",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0bfy04z",
+        "columns": null
+      },
+      "id": "Field_0uxu86c",
+      "key": "refreshToken",
+      "defaultValue": "secrets.GOOGLE_REFRESH_TOKEN",
+      "validate": {
+        "required": true
+      },
+      "description": "The refresh token to stay authenticated longer",
+      "conditional": {
+        "hide": "=authType != \"accessToken\""
+      }
+    },
+    {
+      "text": "## Cluster Configuration",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_1aqcbdy",
+        "columns": null
+      },
+      "id": "Field_17g5991"
+    },
+    {
+      "label": "Project ID",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1rqlgz7",
+        "columns": null
+      },
+      "id": "Field_0u5xkp4",
+      "key": "projectId",
+      "defaultValue": "camunda-researchanddevelopment",
+      "description": "The Google projectId in which you want to create your cluster",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Cluster ID",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0vyp79j",
+        "columns": null
+      },
+      "id": "Field_0pwn0mk",
+      "key": "clusterId",
+      "description": "The name of your cluster. Should not contain any space. Example: my-cluster-name. If DNS Label below is not set, then this will be used as part of the domain name for your environment",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Cluster Description",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1g1nuj8",
+        "columns": null
+      },
+      "id": "Field_0nigy0w",
+      "key": "clusterDescription",
+      "defaultValue": "One click C8SM Environment",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Your Email address",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1cw7ko9",
+        "columns": 8
+      },
+      "id": "Field_13osie9",
+      "key": "emailAddress",
+      "description": "Enter your email if you'd like to be notified when the cluster is ready",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "30 Minutes",
+          "value": "PT30M"
+        },
+        {
+          "label": "1 Hour",
+          "value": "PT1H"
+        },
+        {
+          "label": "2 Hours",
+          "value": "PT2H"
+        },
+        {
+          "label": "4 Hours",
+          "value": "PT4H"
+        },
+        {
+          "label": "8 Hours",
+          "value": "PT8H"
+        },
+        {
+          "label": "12 Hours",
+          "value": "PT12H"
+        },
+        {
+          "label": "24 Hours",
+          "value": "PT24H"
+        },
+        {
+          "label": "2 Days",
+          "value": "P2D"
+        },
+        {
+          "label": "3 Days",
+          "value": "P3D"
+        },
+        {
+          "label": "5 Days",
+          "value": "P5D"
+        }
+      ],
+      "label": "How Long Do you Need the cluster?",
+      "type": "select",
+      "layout": {
+        "row": "Row_1cw7ko9",
+        "columns": null
+      },
+      "id": "Field_0rr6ttr",
+      "key": "clusterTimeout",
+      "description": "The cluster will be deleted after this duration",
+      "defaultValue": "PT8H",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "Central US",
+          "value": "us-central1-a"
+        },
+        {
+          "label": "Southwest Europe",
+          "value": "europe-southwest1-a"
+        }
+      ],
+      "label": "Zone",
+      "type": "select",
+      "layout": {
+        "row": "Row_0oofz41",
+        "columns": null
+      },
+      "id": "Field_1g6gk77",
+      "key": "zoneId",
+      "description": "Select one of the available geographic zone to host your cluster",
+      "validate": {
+        "required": true
+      },
+      "defaultValue": "us-central1-a"
+    },
+    {
+      "values": [
+        {
+          "label": " n2-standard-16",
+          "value": " n2-standard-16"
+        }
+      ],
+      "label": "Machine Type",
+      "type": "select",
+      "layout": {
+        "row": "Row_0oofz41",
+        "columns": null
+      },
+      "id": "Field_1woc8g1",
+      "key": "machineType",
+      "defaultValue": " n2-standard-16",
+      "validate": {
+        "required": true
+      },
+      "description": "Select the type of machine you want to host your cluster. This will impact the performance of your clsuter but also the costs"
+    },
+    {
+      "text": "## Network",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_0tzqt27",
+        "columns": null
+      },
+      "id": "Field_1sxanpp"
+    },
+    {
+      "values": [
+        {
+          "label": "Yes",
+          "value": "true"
+        },
+        {
+          "label": "No Ingress (use port forwarding)",
+          "value": "false"
+        }
+      ],
+      "label": "Setup Combined Ingress?",
+      "type": "select",
+      "layout": {
+        "row": "Row_0s7qgnc",
+        "columns": 12
+      },
+      "id": "Field_1covcjn",
+      "key": "ingressEnabled",
+      "defaultValue": "true",
+      "validate": {
+        "required": true
+      },
+      "description": "Do you want to reach the application via an web address (Ingress) or locally on your machine (port forwarding)?"
+    },
+    {
+      "label": "Base Domain Name",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1lqlnv4",
+        "columns": 16
+      },
+      "id": "Field_0duw935",
+      "key": "baseDomainName",
+      "defaultValue": "gke.c8sm.com",
+      "validate": {
+        "required": true
+      },
+      "conditional": {
+        "hide": "=ingressEnabled = \"false\""
+      },
+      "description": "If you selected Ingress, to which web address should the traffic be redirected?"
+    },
+    {
+      "label": "DNS Label",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1ev637p",
+        "columns": null
+      },
+      "id": "Field_11ir0ad",
+      "key": "dnsLabel",
+      "description": "Fully qualified domain name is &lt;DNS Label&gt;.&lt;Base Domain Name&gt;. If this field is blank, then Cluster Id will be used as DNS Label"
+    },
+    {
+      "values": [
+        {
+          "label": "Yes",
+          "value": "true"
+        },
+        {
+          "label": "No",
+          "value": "false"
+        }
+      ],
+      "label": "Create DNS A Record?",
+      "type": "select",
+      "layout": {
+        "row": "Row_13a1d7n",
+        "columns": null
+      },
+      "id": "Field_1wxr26w",
+      "key": "createDNSRecord",
+      "description": "If true, then a new DNS A Record is created inside a Google Cloud DNS managed zone",
+      "defaultValue": "true",
+      "validate": {
+        "required": true
+      },
+      "conditional": {
+        "hide": "=ingressEnabled = \"false\""
+      }
+    },
+    {
+      "label": "Google Cloud DNS Managed Zone",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_13a1d7n",
+        "columns": null
+      },
+      "id": "Field_0xytzxx",
+      "key": "dnsManagedZone",
+      "defaultValue": "c8sm",
+      "validate": {
+        "required": true
+      },
+      "conditional": {
+        "hide": "=ingressEnabled = \"false\" or createDNSRecord = \"false\""
+      }
+    },
+    {
+      "text": "Full Domain Name: {{clusterName}}.ip-address.{{baseDomainName}}",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_1clps7z",
+        "columns": null
+      },
+      "id": "Field_080kiu8",
+      "conditional": {
+        "hide": "=ingressEnabled = \"false\""
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "No - use http only (no tls and no certificates)",
+          "value": "false"
+        },
+        {
+          "label": "Yes - use https over tls and generate certs",
+          "value": "true"
+        }
+      ],
+      "label": "Use https and tls?",
+      "type": "select",
+      "layout": {
+        "row": "Row_17uwtne",
+        "columns": null
+      },
+      "id": "Field_0z4jmca",
+      "key": "tlsEnabled",
+      "description": "Do you want to use tls certificates and host over https?",
+      "validate": {
+        "required": true
+      },
+      "defaultValue": "true",
+      "conditional": {
+        "hide": "=ingressEnabled = \"false\""
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "Lets Encrypt Prod",
+          "value": "prod"
+        },
+        {
+          "label": "Lets Encrypt Stage",
+          "value": "stage"
+        }
+      ],
+      "label": "Configure Lets Encrypt",
+      "type": "select",
+      "layout": {
+        "row": "Row_10du83u",
+        "columns": null
+      },
+      "id": "Field_04r365t",
+      "key": "letsencryptMode",
+      "conditional": {
+        "hide": "=tlsEnabled = \"false\""
+      },
+      "defaultValue": "prod",
+      "validate": {
+        "required": true
+      },
+      "description": "Which environment do you want to secure: Stage or Production?"
+    },
+    {
+      "text": "## Camunda",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_08cu9zf",
+        "columns": null
+      },
+      "id": "Field_08jrpu6"
+    },
+    {
+      "values": [
+        {
+          "label": "8.3.0-alpha4",
+          "value": "8.3.0-alpha4"
+        },
+        {
+          "label": "8.2.11",
+          "value": "8.2.11"
+        },
+        {
+          "label": "latest",
+          "value": "latest"
+        }
+      ],
+      "label": "Version",
+      "type": "select",
+      "layout": {
+        "row": "Row_0kesgeu",
+        "columns": 7
+      },
+      "id": "Field_0cf07jx",
+      "key": "version",
+      "defaultValue": "latest",
+      "validate": {
+        "required": true
+      },
+      "description": "The version of Camunda Platform"
+    },
+    {
+      "values": [
+        {
+          "label": "Yes - setup Identity and Authentication",
+          "value": "true"
+        },
+        {
+          "label": "No - Webapps will use basic authentication",
+          "value": "false"
+        }
+      ],
+      "label": "Setup Identity Authentication?",
+      "type": "select",
+      "layout": {
+        "row": "Row_0jyzn0h",
+        "columns": null
+      },
+      "id": "Field_1rvoaev",
+      "key": "authEnabled",
+      "validate": {
+        "required": true
+      },
+      "defaultValue": "true",
+      "description": "Would you like to set up security protocols on your installation?"
+    },
+    {
+      "label": "Total Zeebe Brokers",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_10dq97h",
+        "columns": 5
+      },
+      "id": "Field_12fo6mh",
+      "key": "clusterSize",
+      "defaultValue": "1",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Partition Count",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_10dq97h",
+        "columns": 5
+      },
+      "id": "Field_0540o7q",
+      "key": "field_06ydmh1",
+      "defaultValue": "1",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Replication Factor",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_10dq97h",
+        "columns": null
+      },
+      "id": "Field_1j5axn0",
+      "key": "field_1e5cc8k",
+      "validate": {
+        "required": true
+      },
+      "defaultValue": "1"
+    },
+    {
+      "values": [
+        {
+          "label": "Yes",
+          "value": "true"
+        },
+        {
+          "label": "No",
+          "value": "false"
+        }
+      ],
+      "label": "Install Tasklist?",
+      "type": "select",
+      "layout": {
+        "row": "Row_0pzux6b",
+        "columns": 8
+      },
+      "id": "Field_1db7hg4",
+      "key": "tasklistEnabled",
+      "validate": {
+        "required": true
+      },
+      "defaultValue": "true"
+    },
+    {
+      "label": "Tasklist Context Path",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0pzux6b",
+        "columns": null
+      },
+      "id": "Field_0ypehev",
+      "key": "field_0z7k6rk",
+      "conditional": {
+        "hide": "=ingressEnabled = \"false\" or tasklistEnabled = \"false\""
+      },
+      "validate": {
+        "required": true
+      },
+      "defaultValue": "/tasklist"
+    },
+    {
+      "values": [
+        {
+          "label": "Yes",
+          "value": "true"
+        },
+        {
+          "label": "No",
+          "value": "false"
+        }
+      ],
+      "label": "Install Operate?",
+      "type": "select",
+      "layout": {
+        "row": "Row_1f427rp",
+        "columns": 8
+      },
+      "id": "Field_1rkbvb5",
+      "key": "operateEnabled",
+      "defaultValue": "true",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Operate Context Path",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1f427rp",
+        "columns": null
+      },
+      "id": "Field_1yb11cf",
+      "key": "operateContextPath",
+      "defaultValue": "/operate",
+      "validate": {
+        "required": true
+      },
+      "conditional": {
+        "hide": "=ingressEnabled = \"false\" or operateEnabled = \"false\""
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "Yes",
+          "value": "true"
+        },
+        {
+          "label": "No",
+          "value": "false"
+        }
+      ],
+      "label": "Install Optimize",
+      "type": "select",
+      "layout": {
+        "row": "Row_1w34lkk",
+        "columns": 8
+      },
+      "id": "Field_1ehs7th",
+      "key": "optimizeEnabled",
+      "validate": {
+        "required": true
+      },
+      "defaultValue": "true",
+      "conditional": {
+        "hide": "=authEnabled = \"false\""
+      }
+    },
+    {
+      "label": "Optimize Context Path",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1w34lkk",
+        "columns": null
+      },
+      "id": "Field_1nz9zx3",
+      "key": "optimizeContextPath",
+      "defaultValue": "/optimize",
+      "conditional": {
+        "hide": "=ingressEnabled = \"false\" or optimizeEnabled = \"false\""
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "Yes",
+          "value": "true"
+        },
+        {
+          "label": "No",
+          "value": "false"
+        }
+      ],
+      "label": "Install Connectors?",
+      "type": "select",
+      "layout": {
+        "row": "Row_10e1ef4",
+        "columns": 8
+      },
+      "id": "Field_1i24cm5",
+      "key": "connectorsEnabled",
+      "defaultValue": "true",
+      "conditional": {
+        "hide": "=authEnabled = \"false\""
+      }
+    },
+    {
+      "label": "Connectors Context Path",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_10e1ef4",
+        "columns": null
+      },
+      "id": "Field_097wmft",
+      "key": "connectorsContextPath",
+      "defaultValue": "/connectors",
+      "conditional": {
+        "hide": "=authEnabled = \"false\" or ingressEnabled = \"false\" or connectorsEnabled = \"false\""
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "Yes",
+          "value": "true"
+        },
+        {
+          "label": "No",
+          "value": "false"
+        }
+      ],
+      "label": "Install Web Modeler?",
+      "type": "select",
+      "layout": {
+        "row": "Row_12n275m",
+        "columns": 8
+      },
+      "id": "Field_1viwh4g",
+      "key": "modelerEnabled",
+      "description": "Web Modeler requires Enterprise License. You must have Camunda Docker Registry Credentials",
+      "defaultValue": "true",
+      "conditional": {
+        "hide": "=authEnabled = \"false\""
+      }
+    },
+    {
+      "label": "Modeler Context Path",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_12n275m",
+        "columns": null
+      },
+      "id": "Field_0pd6dx8",
+      "key": "modelerContextPath",
+      "defaultValue": "/modeler",
+      "conditional": {
+        "hide": "=ingressEnabled = \"false\" or modelerEnabled = \"false\""
+      }
+    },
+    {
+      "text": "## Docker",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_02phm2t",
+        "columns": null
+      },
+      "id": "Field_0h2r6bq",
+      "conditional": {
+        "hide": "=modelerEnabled = \"false\""
+      }
+    },
+    {
+      "label": "Camunda Docker Registry Username",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1k96pf4",
+        "columns": null
+      },
+      "id": "Field_1jwztw9",
+      "key": "camundaDockerRegistryUsername",
+      "defaultValue": "secrets.DOCKER_REGISTRY_USERNAME",
+      "validate": {
+        "required": true
+      },
+      "conditional": {
+        "hide": "=modelerEnabled = \"false\""
+      }
+    },
+    {
+      "label": "Camunda Docker Registry Password",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1k96pf4",
+        "columns": null
+      },
+      "id": "Field_0tlm4e8",
+      "key": "camundaDockerRegistryPassword",
+      "validate": {
+        "required": true
+      },
+      "conditional": {
+        "hide": "=modelerEnabled = \"false\""
+      },
+      "defaultValue": "secrets.DOCKER_REGISTRY_PASSWORD"
+    },
+    {
+      "label": "Camunda Docker Registry Email",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_01lmagi",
+        "columns": null
+      },
+      "id": "Field_0is51i7",
+      "key": "camundaDockerRegistryEmail",
+      "defaultValue": "secrets.DOCKER_REGISTRY_EMAIL",
+      "validate": {
+        "required": true
+      },
+      "conditional": {
+        "hide": "=modelerEnabled = \"false\""
+      }
+    },
+    {
+      "label": "Camunda Docker Registry Url",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_161oshf",
+        "columns": null
+      },
+      "id": "Field_1a7590v",
+      "key": "camundaDockerRegistryUrl",
+      "defaultValue": "https://registry.camunda.cloud/",
+      "validate": {
+        "required": true
+      },
+      "conditional": {
+        "hide": "=modelerEnabled = \"false\""
+      }
+    },
+    {
+      "text": "## Monitoring",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_0zble7z",
+        "columns": null
+      },
+      "id": "Field_14qle6j"
+    },
+    {
+      "values": [
+        {
+          "label": "Yes",
+          "value": "true"
+        },
+        {
+          "label": "No",
+          "value": "false"
+        }
+      ],
+      "label": "Setup Prometheus and Grafana dashboard Metrics?",
+      "type": "select",
+      "layout": {
+        "row": "Row_1r91ie6",
+        "columns": null
+      },
+      "id": "Field_0hdzdxb",
+      "key": "metricsEnabled",
+      "defaultValue": "false",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "c8sm-installation-form"
+}</zeebe:userTaskForm>
+    </bpmn:extensionElements>
+    <bpmn:startEvent id="StartEvent_1" name="Start">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:output source="=if is defined(google.projectId) then google.projectId else &#34;camunda-researchanddevelopment&#34;" target="google.projectId" />
+          <zeebe:output source="=if is defined(google.clientId) then google.clientId else &#34;secrets.GCP_OAUTH2_CLIENT_ID&#34;" target="google.clientId" />
+          <zeebe:output source="=if is defined(zoneId) then zoneId else &#34;us-central1-a&#34;" target="google.zoneId" />
+          <zeebe:output source="=if is defined(accessToken) then accessToken else null" target="google.accessToken" />
+          <zeebe:output source="=if is defined(refreshToken) then refreshToken else null" target="google.refreshToken" />
+          <zeebe:output source="=if is defined(authorizationCode) then authorizationCode else null" target="google.authorizationCode" />
+          <zeebe:output source="=if is defined(clusterId) then clusterId else null" target="google.clusterId" />
+          <zeebe:output source="=if is defined(clusterDescription) then clusterDescription else null" target="google.clusterDescription" />
+          <zeebe:output source="=if is defined(machineType) then machineType else null" target="google.machineType" />
+        </zeebe:ioMapping>
+        <zeebe:properties>
+          <zeebe:property name="publicAccess" value="true" />
+        </zeebe:properties>
+        <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_1tmikmk" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1orl0ds</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1orl0ds" sourceRef="StartEvent_1" targetRef="Activity_09qoszl" />
+    <bpmn:callActivity id="Activity_09qoszl" name="Create GKE Cluster">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="Process_wwci6tu" propagateAllChildVariables="false" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1orl0ds</bpmn:incoming>
+      <bpmn:outgoing>Flow_1p8exqq</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_1p8exqq" sourceRef="Activity_09qoszl" targetRef="Activity_1pjeyhy" />
+    <bpmn:callActivity id="Activity_1f248f7" name="Delete GKE Cluster">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="Process_deleteGkeCluster" propagateAllChildVariables="false" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0qc0kgk</bpmn:incoming>
+      <bpmn:outgoing>Flow_0jsydh3</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_12ri00r" name="End">
+      <bpmn:incoming>Flow_0jsydh3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0jsydh3" sourceRef="Activity_1f248f7" targetRef="Event_12ri00r" />
+    <bpmn:sequenceFlow id="Flow_095xvh0" sourceRef="Activity_1pjeyhy" targetRef="Activity_07gfzpg" />
+    <bpmn:callActivity id="Activity_1pjeyhy" name="Install Camunda">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="Process_installCamunda" propagateAllChildVariables="false" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1p8exqq</bpmn:incoming>
+      <bpmn:outgoing>Flow_095xvh0</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:subProcess id="Activity_19ab80a" triggeredByEvent="true">
+      <bpmn:startEvent id="Event_1cfiz5v">
+        <bpmn:outgoing>Flow_1ghd20m</bpmn:outgoing>
+        <bpmn:timerEventDefinition id="TimerEventDefinition_153xhaf">
+          <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">=if is defined(clusterTimeout) then clusterTimeout else "PT2H"</bpmn:timeDuration>
+        </bpmn:timerEventDefinition>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="Flow_1ghd20m" sourceRef="Event_1cfiz5v" targetRef="Activity_03mppl2" />
+      <bpmn:callActivity id="Activity_03mppl2" name="Delete GKE Cluster">
+        <bpmn:extensionElements>
+          <zeebe:calledElement processId="Process_deleteGkeCluster" propagateAllChildVariables="false" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_1ghd20m</bpmn:incoming>
+        <bpmn:outgoing>Flow_09rnlh0</bpmn:outgoing>
+      </bpmn:callActivity>
+      <bpmn:endEvent id="Event_0yzdn2f">
+        <bpmn:incoming>Flow_09rnlh0</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_09rnlh0" sourceRef="Activity_03mppl2" targetRef="Event_0yzdn2f" />
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="Flow_0qc0kgk" sourceRef="Activity_07gfzpg" targetRef="Activity_1f248f7" />
+    <bpmn:userTask id="Activity_07gfzpg" name="Stop and Delete Cluster">
+      <bpmn:incoming>Flow_095xvh0</bpmn:incoming>
+      <bpmn:outgoing>Flow_0qc0kgk</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="c8sm-on-click-install">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="162" y="100" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="168" y="143" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0dya6cy_di" bpmnElement="Activity_09qoszl">
+        <dc:Bounds x="250" y="78" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0xjzmi6_di" bpmnElement="Activity_1f248f7">
+        <dc:Bounds x="718" y="78" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_12ri00r_di" bpmnElement="Event_12ri00r">
+        <dc:Bounds x="870" y="100" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="878" y="143" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_08nglzl_di" bpmnElement="Activity_1pjeyhy">
+        <dc:Bounds x="410" y="78" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0mgbat1_di" bpmnElement="Activity_19ab80a" isExpanded="true">
+        <dc:Bounds x="320" y="220" width="353" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0z2qcug_di" bpmnElement="Event_1cfiz5v">
+        <dc:Bounds x="360" y="302" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0o4zpo9_di" bpmnElement="Activity_03mppl2">
+        <dc:Bounds x="455" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0yzdn2f_di" bpmnElement="Event_0yzdn2f">
+        <dc:Bounds x="617" y="302" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1ghd20m_di" bpmnElement="Flow_1ghd20m">
+        <di:waypoint x="396" y="320" />
+        <di:waypoint x="455" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09rnlh0_di" bpmnElement="Flow_09rnlh0">
+        <di:waypoint x="555" y="320" />
+        <di:waypoint x="617" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_074h5xz_di" bpmnElement="Activity_07gfzpg">
+        <dc:Bounds x="558" y="78" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1orl0ds_di" bpmnElement="Flow_1orl0ds">
+        <di:waypoint x="198" y="118" />
+        <di:waypoint x="250" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1p8exqq_di" bpmnElement="Flow_1p8exqq">
+        <di:waypoint x="350" y="118" />
+        <di:waypoint x="410" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jsydh3_di" bpmnElement="Flow_0jsydh3">
+        <di:waypoint x="818" y="118" />
+        <di:waypoint x="870" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_095xvh0_di" bpmnElement="Flow_095xvh0">
+        <di:waypoint x="510" y="118" />
+        <di:waypoint x="558" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qc0kgk_di" bpmnElement="Flow_0qc0kgk">
+        <di:waypoint x="658" y="118" />
+        <di:waypoint x="718" y="118" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,158 @@
+{
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.2.0",
+  "exporter": {
+    "name": "Camunda Web Modeler",
+    "version": "92088b6"
+  },
+  "schemaVersion": 10,
+  "components": [
+    {
+      "text": "## Cluster Configuration",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_1ofbd3q",
+        "columns": null
+      },
+      "id": "Field_04p5bbt"
+    },
+    {
+      "values": [
+        {
+          "label": "Yes, create new GKE cluster",
+          "value": "yes"
+        },
+        {
+          "label": "No, choose an existing GKE cluster",
+          "value": "no"
+        }
+      ],
+      "label": "Create new GKE cluster?",
+      "type": "select",
+      "layout": {
+        "row": "Row_1ymtiyg",
+        "columns": null
+      },
+      "id": "Field_06fv99e",
+      "key": "field_createNewCluster",
+      "defaultValue": "yes",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Enter name for new cluster",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0nmrudz",
+        "columns": null
+      },
+      "id": "Field_120qef6",
+      "key": "field_newClusterId",
+      "validate": {
+        "required": true
+      },
+      "conditional": {
+        "hide": "=field_createNewCluster = \"no\""
+      }
+    },
+    {
+      "label": "Description of new cluster",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0n20tu6",
+        "columns": null
+      },
+      "id": "Field_0116zbk",
+      "key": "field_clusterDescription",
+      "validate": {
+        "required": true
+      },
+      "defaultValue": "Cluster created using C8",
+      "conditional": {
+        "hide": "=field_createNewCluster = \"no\""
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "Central US",
+          "value": "us-central1-a"
+        },
+        {
+          "label": "Southern Europe",
+          "value": "europe-southwest1-a"
+        }
+      ],
+      "label": "Zone",
+      "type": "select",
+      "layout": {
+        "row": "Row_1anuiop",
+        "columns": null
+      },
+      "id": "Field_13qgdfa",
+      "key": "field_0yp54g8",
+      "description": "Select one of the available geographic zone to host your cluster",
+      "defaultValue": "us-central1-a",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "Standard 4",
+          "value": "n2-standard-4"
+        },
+        {
+          "label": "Standard 8",
+          "value": "n2-standard-8"
+        },
+        {
+          "label": "Standard 16",
+          "value": "n2-standard-16"
+        }
+      ],
+      "label": "Machine Type",
+      "type": "select",
+      "layout": {
+        "row": "Row_1anuiop",
+        "columns": null
+      },
+      "id": "Field_16mckip",
+      "key": "field_machineType",
+      "defaultValue": "n2-standard-16",
+      "validate": {
+        "required": true
+      },
+      "description": "Select the type of machine you want to host your cluster. This will impact the performance of your clsuter but also the costs"
+    },
+    {
+      "values": [
+        {
+          "label": "Value",
+          "value": "value"
+        }
+      ],
+      "label": "Choose an existing cluster",
+      "type": "select",
+      "layout": {
+        "row": "Row_1het11q",
+        "columns": null
+      },
+      "id": "Field_1ayfxkj",
+      "key": "field_existingClusterId",
+      "valuesExpression": "=lookups.clusters",
+      "searchable": true,
+      "conditional": {
+        "hide": "=field_createNewCluster = \"yes\""
+      },
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "Form_155rlfh"
+}

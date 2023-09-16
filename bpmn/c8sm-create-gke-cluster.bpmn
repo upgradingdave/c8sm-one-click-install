@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="cbae99f" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.3.0" camunda:diagramRelationId="295e5592-0249-4f51-945e-9cb2ccd99a05">
+  <bpmn:process id="Process_wwci6tu" name="C8SM - Create GKE Cluster" isExecutable="true">
+    <bpmn:extensionElements>
+      <zeebe:userTaskForm id="userTaskForm_0s1og01">{
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.2.0",
+  "exporter": {
+    "name": "Camunda Web Modeler",
+    "version": "bf0082d"
+  },
+  "schemaVersion": 10,
+  "components": [
+    {
+      "text": "# Create Google Cluster Start Form",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_0erbli3",
+        "columns": null
+      },
+      "id": "Field_1g0llvv"
+    },
+    {
+      "text": "## Authentication",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_1jah72q",
+        "columns": null
+      },
+      "id": "Field_0sgnb5p"
+    },
+    {
+      "values": [
+        {
+          "label": "Access / Refresh Token",
+          "value": "accessToken"
+        },
+        {
+          "label": "Authorization Code",
+          "value": "authCode"
+        }
+      ],
+      "label": "Type of Authentication",
+      "type": "select",
+      "layout": {
+        "row": "Row_04dvbl2",
+        "columns": null
+      },
+      "id": "Field_1s0vwfu",
+      "key": "authType",
+      "defaultValue": "accessToken",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "text": "#### Click &lt;a target=\"_gcpSignin\" href=\"https://accounts.google.com/o/oauth2/v2/auth?client_id=291005901394-60d88q0qhsopc4rmj817oldolqer8v1c.apps.googleusercontent.com&amp;redirect_uri=urn:ietf:wg:oauth:2.0:oob&amp;response_type=code&amp;scope=https://www.googleapis.com/auth/cloud-platform\"&gt;HERE&lt;/a&gt; to sign into Google\nThis app will make API requests to Google Cloud on your behalf. After you sign in, choose **Allow**. Finally, copy and paste the **authorization code** below.\n",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_1uq0oz8",
+        "columns": null
+      },
+      "id": "Field_12k47q4",
+      "conditional": {
+        "hide": "=authType != \"authCode\""
+      }
+    },
+    {
+      "label": "Authorization Code",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1v27xno",
+        "columns": null
+      },
+      "id": "Field_065cfyb",
+      "key": "authorizationCode",
+      "description": "Copy and paste Authorization Code Here",
+      "conditional": {
+        "hide": "=authType != \"authCode\""
+      },
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Access Token",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1lgewya",
+        "columns": null
+      },
+      "id": "Field_0tjhgp2",
+      "key": "accessToken",
+      "defaultValue": "secrets.GOOGLE_ACCESS_TOKEN",
+      "validate": {
+        "required": true
+      },
+      "description": "The access token linked to your Google account",
+      "conditional": {
+        "hide": "=authType != \"accessToken\""
+      }
+    },
+    {
+      "label": "Refresh Token",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0bfy04z",
+        "columns": null
+      },
+      "id": "Field_0uxu86c",
+      "key": "refreshToken",
+      "defaultValue": "secrets.GOOGLE_REFRESH_TOKEN",
+      "validate": {
+        "required": true
+      },
+      "description": "The refresh token to stay authenticated longer",
+      "conditional": {
+        "hide": "=authType != \"accessToken\""
+      }
+    },
+    {
+      "text": "## Configuration",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_1aqcbdy",
+        "columns": null
+      },
+      "id": "Field_17g5991"
+    },
+    {
+      "label": "Project ID",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1rqlgz7",
+        "columns": null
+      },
+      "id": "Field_0u5xkp4",
+      "key": "projectId",
+      "defaultValue": "camunda-researchanddevelopment",
+      "description": "The Google projectId in which you want to create your cluster",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Cluster ID",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0vyp79j",
+        "columns": null
+      },
+      "id": "Field_0pwn0mk",
+      "key": "clusterId",
+      "description": "The name of your cluster. Should not contain any space.",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Cluster Description",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1g1nuj8",
+        "columns": null
+      },
+      "id": "Field_0nigy0w",
+      "key": "clusterDescription",
+      "defaultValue": "One click C8SM Environment",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "Central US",
+          "value": "us-central1-a"
+        },
+        {
+          "label": "Southwest Europe",
+          "value": "europe-southwest1-a"
+        }
+      ],
+      "label": "Zone",
+      "type": "select",
+      "layout": {
+        "row": "Row_0oofz41",
+        "columns": null
+      },
+      "id": "Field_1g6gk77",
+      "key": "zoneId",
+      "description": "Google Zone",
+      "validate": {
+        "required": true
+      },
+      "defaultValue": "us-central1-a"
+    },
+    {
+      "values": [
+        {
+          "label": " n2-standard-16",
+          "value": " n2-standard-16"
+        }
+      ],
+      "label": "Machine Type",
+      "type": "select",
+      "layout": {
+        "row": "Row_0oofz41",
+        "columns": null
+      },
+      "id": "Field_1woc8g1",
+      "key": "machineType",
+      "defaultValue": " n1-standard-16",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "Form_02o8n4l"
+}</zeebe:userTaskForm>
+    </bpmn:extensionElements>
+    <bpmn:startEvent id="StartEvent_1" name="Start">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:output source="=if is defined(google.projectId) then google.projectId else &#34;camunda-researchanddevelopment&#34;" target="google.projectId" />
+          <zeebe:output source="=if is defined(google.clientId) then google.clientId else &#34;291005901394-60d88q0qhsopc4rmj817oldolqer8v1c.apps.googleusercontent.com&#34;" target="google.clientId" />
+          <zeebe:output source="=if is defined(zoneId) then zoneId else &#34;us-central1-a&#34;" target="google.zoneId" />
+          <zeebe:output source="=if is defined(accessToken) then accessToken else null" target="google.accessToken" />
+          <zeebe:output source="=if is defined(refreshToken) then refreshToken else null" target="google.refreshToken" />
+          <zeebe:output source="=if is defined(authorizationCode) then authorizationCode else null" target="google.authorizationCode" />
+          <zeebe:output source="=if is defined(clusterId) then clusterId else null" target="google.clusterId" />
+          <zeebe:output source="=if is defined(clusterDescription) then clusterDescription else null" target="google.clusterDescription" />
+          <zeebe:output source="=if is defined(machineType) then machineType else null" target="google.machineType" />
+          <zeebe:output source="={&#10;  &#34;total&#34;: 20,&#10;  &#34;current&#34;: 0,&#10;  &#34;delay&#34;: &#34;PT30S&#34;&#10;}" target="retries" />
+        </zeebe:ioMapping>
+        <zeebe:properties>
+          <zeebe:property name="publicAccess" value="true" />
+        </zeebe:properties>
+        <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_0s1og01" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1mv39ws</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1mv39ws" sourceRef="StartEvent_1" targetRef="Activity_1tligug" />
+    <bpmn:exclusiveGateway id="Gateway_0u0l4ws">
+      <bpmn:incoming>Flow_0kmo49r</bpmn:incoming>
+      <bpmn:incoming>Flow_03470fh</bpmn:incoming>
+      <bpmn:outgoing>Flow_06ahk9i</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0kmo49r" sourceRef="createCluster" targetRef="Gateway_0u0l4ws" />
+    <bpmn:callActivity id="Activity_1tligug" name="Authenticate to Google">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="Process_gcpOauth2" propagateAllChildVariables="false" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=if is defined(google.accessToken) then google.accessToken else null" target="gcpAccessToken" />
+          <zeebe:input source="=if is defined(google.refreshToken) then google.refreshToken else null" target="gcpRefreshToken" />
+          <zeebe:input source="=google.clientId" target="gcpClientId" />
+          <zeebe:input source="=google.authorizationCode" target="gcpAuthorizationCode" />
+          <zeebe:output source="=gcpAccessToken" target="google.accessToken" />
+          <zeebe:output source="=gcpRefreshToken" target="google.refreshToken" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1mv39ws</bpmn:incoming>
+      <bpmn:outgoing>Flow_1y2bxfg</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_1y2bxfg" sourceRef="Activity_1tligug" targetRef="Activity_0c9jejp" />
+    <bpmn:sequenceFlow id="Flow_06ahk9i" sourceRef="Gateway_0u0l4ws" targetRef="Gateway_15yayay" />
+    <bpmn:serviceTask id="createCluster" name="Create cluster" zeebe:modelerTemplate="io.camunda.connectors.HttpJson.v2" zeebe:modelerTemplateVersion="1" zeebe:modelerTemplateIcon="data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%2018%2018%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M17.0335%208.99997C17.0335%2013.4475%2013.4281%2017.0529%208.98065%2017.0529C4.53316%2017.0529%200.927765%2013.4475%200.927765%208.99997C0.927765%204.55248%204.53316%200.947083%208.98065%200.947083C13.4281%200.947083%2017.0335%204.55248%2017.0335%208.99997Z%22%20fill%3D%22%23505562%22%2F%3E%0A%3Cpath%20d%3D%22M4.93126%2014.1571L6.78106%203.71471H10.1375C11.1917%203.71471%2011.9824%203.98323%2012.5095%204.52027C13.0465%205.04736%2013.315%205.73358%2013.315%206.57892C13.315%207.44414%2013.0714%208.15522%2012.5841%208.71215C12.1067%209.25913%2011.4553%209.63705%2010.6298%209.8459L12.0619%2014.1571H10.3315L9.03364%2010.0249H7.24351L6.51254%2014.1571H4.93126ZM7.49711%208.59281H9.24248C9.99832%208.59281%2010.5901%208.42374%2011.0177%208.08561C11.4553%207.73753%2011.6741%207.26513%2011.6741%206.66842C11.6741%206.19106%2011.5249%205.81811%2011.2265%205.54959C10.9282%205.27113%2010.4558%205.1319%209.80936%205.1319H8.10874L7.49711%208.59281Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E%0A">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda:http-json:1" />
+        <zeebe:ioMapping>
+          <zeebe:input source="noAuth" target="authentication.type" />
+          <zeebe:input source="post" target="method" />
+          <zeebe:input source="=&#34;https://container.googleapis.com/v1&#34; + &#34;/projects/&#34;+ google.projectId + &#34;/locations/&#34;+google.zoneId+&#34;/clusters&#34;" target="url" />
+          <zeebe:input source="={&#10;  &#34;Authorization&#34;: &#34;Bearer &#34; + google.accessToken,&#10;  &#34;Accept&#34;: &#34;application/json&#34;&#10;}" target="headers" />
+          <zeebe:input source="20" target="connectionTimeoutInSeconds" />
+          <zeebe:input source="={ &#10; &#34;projectId&#34;: google.projectId,&#10; &#34;zone&#34;: google.zoneId,&#10; &#34;cluster&#34;: &#10; {&#10;  &#34;name&#34;: google.clusterId,&#10;  &#34;description&#34;: google.clusterDescription,&#10;  &#34;nodePools&#34;: [&#10;         {&#10;           &#34;name&#34;: &#34;default-pool&#34;,&#10;           &#34;config&#34;: {&#10;             &#34;machineType&#34;: google.machineType,&#10;             &#34;diskSizeGb&#34;: 100,&#10;             &#34;diskType&#34;: &#34;pd-ssd&#34;,&#10;             &#34;spot&#34;: true&#10;           },&#10;           &#34;initialNodeCount&#34;: 1,&#10;           &#34;autoscaling&#34;: {&#10;             &#34;enabled&#34;: true,&#10;             &#34;minNodeCount&#34;: 1,&#10;             &#34;maxNodeCount&#34;: 6,&#10;             &#34;locationPolicy&#34;: &#34;ANY&#34;&#10;           }&#10;         }&#10;     ],&#10;  &#34;ipAllocationPolicy&#34;: {&#10;         &#34;useIpAliases&#34;: true&#10;     },&#10;  &#34;releaseChannel&#34;: {&#10;         &#34;channel&#34;: &#34;REGULAR&#34;&#10;  }&#10; }&#10;}" target="body" />
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultVariable" value="createClusterResponse" />
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0sran4o</bpmn:incoming>
+      <bpmn:outgoing>Flow_0kmo49r</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_0c9jejp" name="Does Cluster Already Exist?" zeebe:modelerTemplate="io.camunda.connectors.HttpJson.v2" zeebe:modelerTemplateVersion="1" zeebe:modelerTemplateIcon="data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%2018%2018%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M17.0335%208.99997C17.0335%2013.4475%2013.4281%2017.0529%208.98065%2017.0529C4.53316%2017.0529%200.927765%2013.4475%200.927765%208.99997C0.927765%204.55248%204.53316%200.947083%208.98065%200.947083C13.4281%200.947083%2017.0335%204.55248%2017.0335%208.99997Z%22%20fill%3D%22%23505562%22%2F%3E%0A%3Cpath%20d%3D%22M4.93126%2014.1571L6.78106%203.71471H10.1375C11.1917%203.71471%2011.9824%203.98323%2012.5095%204.52027C13.0465%205.04736%2013.315%205.73358%2013.315%206.57892C13.315%207.44414%2013.0714%208.15522%2012.5841%208.71215C12.1067%209.25913%2011.4553%209.63705%2010.6298%209.8459L12.0619%2014.1571H10.3315L9.03364%2010.0249H7.24351L6.51254%2014.1571H4.93126ZM7.49711%208.59281H9.24248C9.99832%208.59281%2010.5901%208.42374%2011.0177%208.08561C11.4553%207.73753%2011.6741%207.26513%2011.6741%206.66842C11.6741%206.19106%2011.5249%205.81811%2011.2265%205.54959C10.9282%205.27113%2010.4558%205.1319%209.80936%205.1319H8.10874L7.49711%208.59281Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E%0A">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda:http-json:1" />
+        <zeebe:ioMapping>
+          <zeebe:input source="noAuth" target="authentication.type" />
+          <zeebe:input source="get" target="method" />
+          <zeebe:input source="=&#34;https://container.googleapis.com/v1/projects/&#34;+google.projectId+&#34;/locations/&#34;+google.zoneId+&#34;/clusters/&#34;+google.clusterId" target="url" />
+          <zeebe:input source="={&#10;  &#34;Authorization&#34;: &#34;Bearer &#34; + google.accessToken,&#10;  &#34;Accept&#34;: &#34;application/json&#34;&#10;}" target="headers" />
+          <zeebe:input source="20" target="connectionTimeoutInSeconds" />
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultVariable" value="clusterDetailsResponse" />
+          <zeebe:header key="errorExpression" value="=if error.code = &#34;404&#34; then&#10;  bpmnError(&#34;404&#34;, &#34;Cluster does not exist&#34;)&#10;else&#10;  null" />
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1y2bxfg</bpmn:incoming>
+      <bpmn:outgoing>Flow_03470fh</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_03470fh" name="Cluster already exists" sourceRef="Activity_0c9jejp" targetRef="Gateway_0u0l4ws" />
+    <bpmn:boundaryEvent id="Event_1vuzq1f" attachedToRef="Activity_0c9jejp">
+      <bpmn:outgoing>Flow_0sran4o</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0dixa36" errorRef="Error_08dmban" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0sran4o" sourceRef="Event_1vuzq1f" targetRef="createCluster" />
+    <bpmn:sequenceFlow id="Flow_15nmddf" sourceRef="Activity_072bbs1" targetRef="Gateway_11j97du" />
+    <bpmn:serviceTask id="Activity_072bbs1" name="Is cluster ready?" zeebe:modelerTemplate="io.camunda.connectors.HttpJson.v2" zeebe:modelerTemplateVersion="1" zeebe:modelerTemplateIcon="data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%2018%2018%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M17.0335%208.99997C17.0335%2013.4475%2013.4281%2017.0529%208.98065%2017.0529C4.53316%2017.0529%200.927765%2013.4475%200.927765%208.99997C0.927765%204.55248%204.53316%200.947083%208.98065%200.947083C13.4281%200.947083%2017.0335%204.55248%2017.0335%208.99997Z%22%20fill%3D%22%23505562%22%2F%3E%0A%3Cpath%20d%3D%22M4.93126%2014.1571L6.78106%203.71471H10.1375C11.1917%203.71471%2011.9824%203.98323%2012.5095%204.52027C13.0465%205.04736%2013.315%205.73358%2013.315%206.57892C13.315%207.44414%2013.0714%208.15522%2012.5841%208.71215C12.1067%209.25913%2011.4553%209.63705%2010.6298%209.8459L12.0619%2014.1571H10.3315L9.03364%2010.0249H7.24351L6.51254%2014.1571H4.93126ZM7.49711%208.59281H9.24248C9.99832%208.59281%2010.5901%208.42374%2011.0177%208.08561C11.4553%207.73753%2011.6741%207.26513%2011.6741%206.66842C11.6741%206.19106%2011.5249%205.81811%2011.2265%205.54959C10.9282%205.27113%2010.4558%205.1319%209.80936%205.1319H8.10874L7.49711%208.59281Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E%0A">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda:http-json:1" />
+        <zeebe:ioMapping>
+          <zeebe:input source="noAuth" target="authentication.type" />
+          <zeebe:input source="get" target="method" />
+          <zeebe:input source="=&#34;https://container.googleapis.com/v1/projects/&#34;+google.projectId+&#34;/locations/&#34;+google.zoneId+&#34;/clusters/&#34;+google.clusterId" target="url" />
+          <zeebe:input source="={&#10;  &#34;Authorization&#34;: &#34;Bearer &#34; + google.accessToken,&#10;  &#34;Accept&#34;: &#34;application/json&#34;&#10;}" target="headers" />
+          <zeebe:input source="20" target="connectionTimeoutInSeconds" />
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultExpression" value="={&#10;  clusterStatus: if is defined(response.body.status) then response.body.status else &#34;unknown&#34;,&#10;  clusterEndpoint: if is defined(response.body.endpoint) then response.body.endpoint else &#34;unknown&#34;&#10;}" />
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0x9fce8</bpmn:incoming>
+      <bpmn:outgoing>Flow_15nmddf</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_11j97du" name="Running?" default="Flow_1kble6h">
+      <bpmn:incoming>Flow_15nmddf</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xysp80</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1kble6h</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0xysp80" name="Yes" sourceRef="Gateway_11j97du" targetRef="Event_0dic6l2">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=clusterStatus = "RUNNING"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_0dic6l2" name="Cluster is Ready">
+      <bpmn:incoming>Flow_0xysp80</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="Gateway_15yayay">
+      <bpmn:incoming>Flow_06ahk9i</bpmn:incoming>
+      <bpmn:incoming>Flow_1f86uf1</bpmn:incoming>
+      <bpmn:outgoing>Flow_0x9fce8</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0x9fce8" sourceRef="Gateway_15yayay" targetRef="Activity_072bbs1" />
+    <bpmn:sequenceFlow id="Flow_1kble6h" name="No" sourceRef="Gateway_11j97du" targetRef="Gateway_1bcg4or" />
+    <bpmn:intermediateCatchEvent id="Event_019fnnj" name="Wait before polling">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:output source="=retries.current + 1" target="retries.current" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0sys278</bpmn:incoming>
+      <bpmn:outgoing>Flow_1f86uf1</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0mzwoa4">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">=retries.delay</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_1f86uf1" sourceRef="Event_019fnnj" targetRef="Gateway_15yayay" />
+    <bpmn:exclusiveGateway id="Gateway_1bcg4or" name="Timeout?" default="Flow_0sys278">
+      <bpmn:incoming>Flow_1kble6h</bpmn:incoming>
+      <bpmn:outgoing>Flow_0sys278</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1blc89d</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0sys278" name="No" sourceRef="Gateway_1bcg4or" targetRef="Event_019fnnj" />
+    <bpmn:sequenceFlow id="Flow_1blc89d" name="Yes" sourceRef="Gateway_1bcg4or" targetRef="Event_1kyqfsg">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=retries.current &gt;= retries.total</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_1kyqfsg" name="Cluster Not Running">
+      <bpmn:incoming>Flow_1blc89d</bpmn:incoming>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_06iv34j" errorRef="Error_0f7qhm5" />
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmn:error id="Error_1dtaw4g" name="Invalid Access Token" errorCode="invalidToken" />
+  <bpmn:error id="Error_08dmban" name="Error_404" errorCode="404" />
+  <bpmn:error id="Error_0f7qhm5" name="Error_clusterNotRunning" errorCode="Error_clusterNotRunning" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_wwci6tu">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="162" y="200" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="168" y="243" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0u0l4ws_di" bpmnElement="Gateway_0u0l4ws" isMarkerVisible="true">
+        <dc:Bounds x="695" y="193" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_03k5iyt_di" bpmnElement="Activity_1tligug">
+        <dc:Bounds x="250" y="178" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0an1iuk_di" bpmnElement="createCluster">
+        <dc:Bounds x="560" y="178" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1seypsu_di" bpmnElement="Activity_0c9jejp">
+        <dc:Bounds x="400" y="178" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1qodg9e_di" bpmnElement="Activity_072bbs1">
+        <dc:Bounds x="900" y="178" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_11j97du_di" bpmnElement="Gateway_11j97du" isMarkerVisible="true">
+        <dc:Bounds x="1035" y="193" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1036" y="173" width="48" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_04uub4j_di" bpmnElement="Event_0dic6l2">
+        <dc:Bounds x="1132" y="200" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1109" y="243" width="81" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_15yayay_di" bpmnElement="Gateway_15yayay" isMarkerVisible="true">
+        <dc:Bounds x="815" y="193" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0yve8r3_di" bpmnElement="Event_019fnnj">
+        <dc:Bounds x="932" y="302" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="923" y="345" width="56" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1bcg4or_di" bpmnElement="Gateway_1bcg4or" isMarkerVisible="true">
+        <dc:Bounds x="1035" y="295" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1037" y="355" width="46" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0yi2p3w_di" bpmnElement="Event_1kyqfsg">
+        <dc:Bounds x="1132" y="302" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1123" y="345" width="56" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1vb03et_di" bpmnElement="Event_1vuzq1f">
+        <dc:Bounds x="482" y="200" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1mv39ws_di" bpmnElement="Flow_1mv39ws">
+        <di:waypoint x="198" y="218" />
+        <di:waypoint x="250" y="218" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0kmo49r_di" bpmnElement="Flow_0kmo49r">
+        <di:waypoint x="660" y="218" />
+        <di:waypoint x="695" y="218" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1y2bxfg_di" bpmnElement="Flow_1y2bxfg">
+        <di:waypoint x="350" y="218" />
+        <di:waypoint x="400" y="218" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06ahk9i_di" bpmnElement="Flow_06ahk9i">
+        <di:waypoint x="745" y="218" />
+        <di:waypoint x="815" y="218" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03470fh_di" bpmnElement="Flow_03470fh">
+        <di:waypoint x="450" y="178" />
+        <di:waypoint x="450" y="150" />
+        <di:waypoint x="720" y="150" />
+        <di:waypoint x="720" y="193" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="493" y="116" width="74" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0sran4o_di" bpmnElement="Flow_0sran4o">
+        <di:waypoint x="518" y="218" />
+        <di:waypoint x="560" y="218" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15nmddf_di" bpmnElement="Flow_15nmddf">
+        <di:waypoint x="1000" y="218" />
+        <di:waypoint x="1035" y="218" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xysp80_di" bpmnElement="Flow_0xysp80">
+        <di:waypoint x="1085" y="218" />
+        <di:waypoint x="1132" y="218" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1100" y="200" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0x9fce8_di" bpmnElement="Flow_0x9fce8">
+        <di:waypoint x="865" y="218" />
+        <di:waypoint x="900" y="218" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1kble6h_di" bpmnElement="Flow_1kble6h">
+        <di:waypoint x="1060" y="243" />
+        <di:waypoint x="1060" y="295" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1068" y="266" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1f86uf1_di" bpmnElement="Flow_1f86uf1">
+        <di:waypoint x="932" y="320" />
+        <di:waypoint x="840" y="320" />
+        <di:waypoint x="840" y="243" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0sys278_di" bpmnElement="Flow_0sys278">
+        <di:waypoint x="1035" y="320" />
+        <di:waypoint x="968" y="320" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="987" y="297" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1blc89d_di" bpmnElement="Flow_1blc89d">
+        <di:waypoint x="1085" y="320" />
+        <di:waypoint x="1132" y="320" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1100" y="302" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
