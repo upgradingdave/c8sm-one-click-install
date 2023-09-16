@@ -13,6 +13,7 @@ However, before installing Camunda, you'll need a kubernetes cluster, and will a
 The [Camunda 8 Helm Profiles]() community project can assit you to setup all this infrastructure, but it can be tedious to set up all the tools needed such as `make`, `kubectl`, and `helm`, not to mention the cloud provider tools such as `aws cli`, `eksctl`, `gcp cli`, `azure cli`, etc. 
 
 So, this project, the `C8SM-One-Click-Install` takes an interesting approach. What if we use Camunda 8 to install Camunda 8?! It turns out that this works really well! This project describes how to use Camunda 8 to easily provision additional Camunda 8 SM environments with a single click. 
+
 ## Getting Started
 
 ### Step 0 - Chicken vs the Egg
@@ -34,3 +35,20 @@ Open your Camunda SaaS Modeler, upload the files found in the [bpm](bpmn) direct
 > [!NOTE]  
 > It will also be possible to use Docker compose after 8.3 is officially released.  
 
+### Step 2 - Configure Secrets
+
+- `GCP_OAUTH2_CLIENT_ID` - APIs & Services Credentials Client Id with sufficient access into the Google Cloud Project to create and managed GKS clusters. 
+- `GCP_OAUTH2_CLIENT_SECRET` - IAM Service Account Client Secret 
+- `GCP_PROJECT_ID` - Google Cloud Project name. This is the project where Kubernetes Clusters will be created. This is a required field on the start form. It's best to configure this as a secret. But, this can also be explicitly entered on the start form.
+- `GOOGLE_ACCESS_TOKEN` - This project performs a Google Oauth2 Handshake on behalf of a user. So, the Client ID and Secret are traded for `AUTHORIZATION_CODE`, which is then traded for Access and Refresh Tokens. If not defined, this handshake will occur every time. For convenience, you can add the Access and Refresh tokens as secrets to avoid having to do the Oauth2 handshake every time. 
+- `GOOGLE_REFRESH_TOKEN` - See `GOOGLE_ACCESS_TOKEN` explanation above.
+- `SENDGRID_API_KEY` - Used to send an email notifications
+- `DOCKER_REGISTRY_USERNAME` - used to provision Web Modeler. Not required if you choose not to install Web Modeler. 
+- `DOCKER_REGISTRY_PASSWORD` - used to provision Web Modeler. Not required if you choose not to install Web Modeler.
+- `DOCKER_REGISTRY_EMAIL` - used to provision Web Modeler. Not required if you choose not to install Web Modeler.
+
+### Step 3 - Create an Environment!
+
+Submit the start form to create an instance of the [C8SM - One Click Install](bpmn/c8sm-one-click-install.bpmn) process. 
+
+By default, if everything runs successfully, a new GKE cluster is provisioned, an ingress is configured along with a domain and tls certificates, and camunda is installed.  

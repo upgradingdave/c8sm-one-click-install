@@ -2,12 +2,12 @@
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="cbae99f" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.3.0" camunda:diagramRelationId="7c66923d-d594-47a4-8ce0-46ccdc3f0d2d">
   <bpmn:process id="c8sm-on-click-install" name="C8SM - One Click Install" isExecutable="true">
     <bpmn:extensionElements>
-      <zeebe:userTaskForm id="userTaskForm_1tmikmk">{
+      <zeebe:userTaskForm id="userTaskForm_0mrvugl">{
   "executionPlatform": "Camunda Cloud",
   "executionPlatformVersion": "8.3.0",
   "exporter": {
     "name": "Camunda Web Modeler",
-    "version": "66b1756"
+    "version": "cbae99f"
   },
   "schemaVersion": 10,
   "components": [
@@ -140,7 +140,7 @@
       },
       "id": "Field_0u5xkp4",
       "key": "projectId",
-      "defaultValue": "camunda-researchanddevelopment",
+      "defaultValue": "secrets.GCP_PROJECT_ID",
       "description": "The Google projectId in which you want to create your cluster",
       "validate": {
         "required": true
@@ -486,12 +486,16 @@
           "value": "8.3.0-alpha4"
         },
         {
-          "label": "8.2.11",
-          "value": "8.2.11"
+          "label": "8.3.0-alpha5",
+          "value": "8.3.0-alpha5"
         },
         {
-          "label": "latest",
-          "value": "latest"
+          "label": "8.3.0-alpha6",
+          "value": "8.3.0-alpha6"
+        },
+        {
+          "label": "8.2.11",
+          "value": "8.2.11"
         }
       ],
       "label": "Version",
@@ -502,7 +506,7 @@
       },
       "id": "Field_0cf07jx",
       "key": "version",
-      "defaultValue": "latest",
+      "defaultValue": "8.3.0-alpha6",
       "validate": {
         "required": true
       },
@@ -898,9 +902,9 @@
     <bpmn:startEvent id="StartEvent_1" name="Start">
       <bpmn:extensionElements>
         <zeebe:ioMapping>
-          <zeebe:output source="=if is defined(google.projectId) then google.projectId else &#34;camunda-researchanddevelopment&#34;" target="google.projectId" />
+          <zeebe:output source="=if is defined(google.projectId) then google.projectId else &#34;{{secrets.GCP_PROJECT_ID}}&#34;" target="google.projectId" />
           <zeebe:output source="=if is defined(google.clientId) then google.clientId else &#34;secrets.GCP_OAUTH2_CLIENT_ID&#34;" target="google.clientId" />
-          <zeebe:output source="=if is defined(zoneId) then zoneId else &#34;us-central1-a&#34;" target="google.zoneId" />
+          <zeebe:output source="=if is defined(zoneId) then zoneId else &#34;secrets.GCP_ZONE_ID&#34;" target="google.zoneId" />
           <zeebe:output source="=if is defined(accessToken) then accessToken else null" target="google.accessToken" />
           <zeebe:output source="=if is defined(refreshToken) then refreshToken else null" target="google.refreshToken" />
           <zeebe:output source="=if is defined(authorizationCode) then authorizationCode else null" target="google.authorizationCode" />
@@ -911,7 +915,7 @@
         <zeebe:properties>
           <zeebe:property name="publicAccess" value="true" />
         </zeebe:properties>
-        <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_1tmikmk" />
+        <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_0mrvugl" />
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_1orl0ds</bpmn:outgoing>
     </bpmn:startEvent>

@@ -29,8 +29,8 @@
     <bpmn:startEvent id="StartEvent_1" name="Start">
       <bpmn:extensionElements>
         <zeebe:ioMapping>
-          <zeebe:output source="=if is defined(google.clientId) then google.clientId else &#34;291005901394-60d88q0qhsopc4rmj817oldolqer8v1c.apps.googleusercontent.com&#34;" target="google.clientId" />
-          <zeebe:output source="=if is defined(google.projectId) then google.projectId else &#34;camunda-researchanddevelopment&#34;" target="google.projectId" />
+          <zeebe:output source="=if is defined(google.clientId) then google.clientId else &#34;secrets.GCP_OAUTH2_CLIENT_ID&#34;" target="google.clientId" />
+          <zeebe:output source="=if is defined(google.projectId) then google.projectId else &#34;{{secrets.GCP_PROJECT_ID}}&#34;" target="google.projectId" />
         </zeebe:ioMapping>
         <zeebe:properties />
       </bpmn:extensionElements>
@@ -259,7 +259,7 @@
     <bpmn:sequenceFlow id="Flow_0qn0g84" sourceRef="Activity_09owpkz" targetRef="Activity_02qla2b" />
     <bpmn:scriptTask id="Activity_09owpkz" name="Set Job Id">
       <bpmn:extensionElements>
-        <zeebe:script expression="=if is defined(google.jobId) &#10;then google.jobId &#10;else lower case(&#34;c8sm-&#34; + replace(replace(replace(string(now()), &#34;@Etc/UTC&#34;, &#34;&#34;), &#34;:&#34;, &#34;&#34;), &#34;\.&#34;, &#34;&#34;))" resultVariable="jobId" />
+        <zeebe:script expression="=if is defined(google.jobId) &#10;then google.jobId &#10;else lower case(&#34;c8sm-&#34; + replace(replace(replace (replace(string(now()), &#34;@Etc/UTC&#34;, &#34;&#34;), &#34;@gmt&#34;, &#34;&#34;), &#34;:&#34;, &#34;&#34;), &#34;\.&#34;, &#34;&#34;))" resultVariable="jobId" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_08fbhgb</bpmn:incoming>
       <bpmn:outgoing>Flow_0qn0g84</bpmn:outgoing>

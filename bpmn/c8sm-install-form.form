@@ -3,7 +3,7 @@
   "executionPlatformVersion": "8.3.0",
   "exporter": {
     "name": "Camunda Web Modeler",
-    "version": "66b1756"
+    "version": "cbae99f"
   },
   "schemaVersion": 10,
   "components": [
@@ -136,7 +136,7 @@
       },
       "id": "Field_0u5xkp4",
       "key": "projectId",
-      "defaultValue": "camunda-researchanddevelopment",
+      "defaultValue": "secrets.GCP_PROJECT_ID",
       "description": "The Google projectId in which you want to create your cluster",
       "validate": {
         "required": true
@@ -482,12 +482,16 @@
           "value": "8.3.0-alpha4"
         },
         {
-          "label": "8.2.11",
-          "value": "8.2.11"
+          "label": "8.3.0-alpha5",
+          "value": "8.3.0-alpha5"
         },
         {
-          "label": "latest",
-          "value": "latest"
+          "label": "8.3.0-alpha6",
+          "value": "8.3.0-alpha6"
+        },
+        {
+          "label": "8.2.11",
+          "value": "8.2.11"
         }
       ],
       "label": "Version",
@@ -498,7 +502,7 @@
       },
       "id": "Field_0cf07jx",
       "key": "version",
-      "defaultValue": "latest",
+      "defaultValue": "8.3.0-alpha6",
       "validate": {
         "required": true
       },
