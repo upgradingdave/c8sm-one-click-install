@@ -136,7 +136,7 @@
       },
       "id": "Field_0u5xkp4",
       "key": "projectId",
-      "defaultValue": "secrets.GCP_PROJECT_ID",
+      "defaultValue": "{{secrets.GCP_PROJECT_ID}}",
       "description": "The Google projectId in which you want to create your cluster",
       "validate": {
         "required": true

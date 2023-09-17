@@ -2,7 +2,7 @@
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="cbae99f" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.3.0" camunda:diagramRelationId="7c66923d-d594-47a4-8ce0-46ccdc3f0d2d">
   <bpmn:process id="c8sm-on-click-install" name="C8SM - One Click Install" isExecutable="true">
     <bpmn:extensionElements>
-      <zeebe:userTaskForm id="userTaskForm_0mrvugl">{
+      <zeebe:userTaskForm id="userTaskForm_346g51t">{
   "executionPlatform": "Camunda Cloud",
   "executionPlatformVersion": "8.3.0",
   "exporter": {
@@ -140,7 +140,7 @@
       },
       "id": "Field_0u5xkp4",
       "key": "projectId",
-      "defaultValue": "secrets.GCP_PROJECT_ID",
+      "defaultValue": "{{secrets.GCP_PROJECT_ID}}",
       "description": "The Google projectId in which you want to create your cluster",
       "validate": {
         "required": true
@@ -915,7 +915,7 @@
         <zeebe:properties>
           <zeebe:property name="publicAccess" value="true" />
         </zeebe:properties>
-        <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_0mrvugl" />
+        <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_346g51t" />
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_1orl0ds</bpmn:outgoing>
     </bpmn:startEvent>

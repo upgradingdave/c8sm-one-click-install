@@ -2,12 +2,12 @@
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="cbae99f" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.3.0" camunda:diagramRelationId="295e5592-0249-4f51-945e-9cb2ccd99a05">
   <bpmn:process id="Process_wwci6tu" name="C8SM - Create GKE Cluster" isExecutable="true">
     <bpmn:extensionElements>
-      <zeebe:userTaskForm id="userTaskForm_0s1og01">{
+      <zeebe:userTaskForm id="userTaskForm_2qhmrq9">{
   "executionPlatform": "Camunda Cloud",
   "executionPlatformVersion": "8.2.0",
   "exporter": {
     "name": "Camunda Web Modeler",
-    "version": "bf0082d"
+    "version": "cbae99f"
   },
   "schemaVersion": 10,
   "components": [
@@ -140,7 +140,7 @@
       },
       "id": "Field_0u5xkp4",
       "key": "projectId",
-      "defaultValue": "camunda-researchanddevelopment",
+      "defaultValue": "{{secrets.GCP_PROJECT_ID}}",
       "description": "The Google projectId in which you want to create your cluster",
       "validate": {
         "required": true
@@ -241,7 +241,7 @@
         <zeebe:properties>
           <zeebe:property name="publicAccess" value="true" />
         </zeebe:properties>
-        <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_0s1og01" />
+        <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_2qhmrq9" />
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_1mv39ws</bpmn:outgoing>
     </bpmn:startEvent>
@@ -269,24 +269,6 @@
     </bpmn:callActivity>
     <bpmn:sequenceFlow id="Flow_1y2bxfg" sourceRef="Activity_1tligug" targetRef="Activity_0c9jejp" />
     <bpmn:sequenceFlow id="Flow_06ahk9i" sourceRef="Gateway_0u0l4ws" targetRef="Gateway_15yayay" />
-    <bpmn:serviceTask id="createCluster" name="Create cluster" zeebe:modelerTemplate="io.camunda.connectors.HttpJson.v2" zeebe:modelerTemplateVersion="1" zeebe:modelerTemplateIcon="data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%2018%2018%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M17.0335%208.99997C17.0335%2013.4475%2013.4281%2017.0529%208.98065%2017.0529C4.53316%2017.0529%200.927765%2013.4475%200.927765%208.99997C0.927765%204.55248%204.53316%200.947083%208.98065%200.947083C13.4281%200.947083%2017.0335%204.55248%2017.0335%208.99997Z%22%20fill%3D%22%23505562%22%2F%3E%0A%3Cpath%20d%3D%22M4.93126%2014.1571L6.78106%203.71471H10.1375C11.1917%203.71471%2011.9824%203.98323%2012.5095%204.52027C13.0465%205.04736%2013.315%205.73358%2013.315%206.57892C13.315%207.44414%2013.0714%208.15522%2012.5841%208.71215C12.1067%209.25913%2011.4553%209.63705%2010.6298%209.8459L12.0619%2014.1571H10.3315L9.03364%2010.0249H7.24351L6.51254%2014.1571H4.93126ZM7.49711%208.59281H9.24248C9.99832%208.59281%2010.5901%208.42374%2011.0177%208.08561C11.4553%207.73753%2011.6741%207.26513%2011.6741%206.66842C11.6741%206.19106%2011.5249%205.81811%2011.2265%205.54959C10.9282%205.27113%2010.4558%205.1319%209.80936%205.1319H8.10874L7.49711%208.59281Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E%0A">
-      <bpmn:extensionElements>
-        <zeebe:taskDefinition type="io.camunda:http-json:1" />
-        <zeebe:ioMapping>
-          <zeebe:input source="noAuth" target="authentication.type" />
-          <zeebe:input source="post" target="method" />
-          <zeebe:input source="=&#34;https://container.googleapis.com/v1&#34; + &#34;/projects/&#34;+ google.projectId + &#34;/locations/&#34;+google.zoneId+&#34;/clusters&#34;" target="url" />
-          <zeebe:input source="={&#10;  &#34;Authorization&#34;: &#34;Bearer &#34; + google.accessToken,&#10;  &#34;Accept&#34;: &#34;application/json&#34;&#10;}" target="headers" />
-          <zeebe:input source="20" target="connectionTimeoutInSeconds" />
-          <zeebe:input source="={ &#10; &#34;projectId&#34;: google.projectId,&#10; &#34;zone&#34;: google.zoneId,&#10; &#34;cluster&#34;: &#10; {&#10;  &#34;name&#34;: google.clusterId,&#10;  &#34;description&#34;: google.clusterDescription,&#10;  &#34;nodePools&#34;: [&#10;         {&#10;           &#34;name&#34;: &#34;default-pool&#34;,&#10;           &#34;config&#34;: {&#10;             &#34;machineType&#34;: google.machineType,&#10;             &#34;diskSizeGb&#34;: 100,&#10;             &#34;diskType&#34;: &#34;pd-ssd&#34;,&#10;             &#34;spot&#34;: true&#10;           },&#10;           &#34;initialNodeCount&#34;: 1,&#10;           &#34;autoscaling&#34;: {&#10;             &#34;enabled&#34;: true,&#10;             &#34;minNodeCount&#34;: 1,&#10;             &#34;maxNodeCount&#34;: 6,&#10;             &#34;locationPolicy&#34;: &#34;ANY&#34;&#10;           }&#10;         }&#10;     ],&#10;  &#34;ipAllocationPolicy&#34;: {&#10;         &#34;useIpAliases&#34;: true&#10;     },&#10;  &#34;releaseChannel&#34;: {&#10;         &#34;channel&#34;: &#34;REGULAR&#34;&#10;  }&#10; }&#10;}" target="body" />
-        </zeebe:ioMapping>
-        <zeebe:taskHeaders>
-          <zeebe:header key="resultVariable" value="createClusterResponse" />
-        </zeebe:taskHeaders>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0sran4o</bpmn:incoming>
-      <bpmn:outgoing>Flow_0kmo49r</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:serviceTask id="Activity_0c9jejp" name="Does Cluster Already Exist?" zeebe:modelerTemplate="io.camunda.connectors.HttpJson.v2" zeebe:modelerTemplateVersion="1" zeebe:modelerTemplateIcon="data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%2018%2018%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M17.0335%208.99997C17.0335%2013.4475%2013.4281%2017.0529%208.98065%2017.0529C4.53316%2017.0529%200.927765%2013.4475%200.927765%208.99997C0.927765%204.55248%204.53316%200.947083%208.98065%200.947083C13.4281%200.947083%2017.0335%204.55248%2017.0335%208.99997Z%22%20fill%3D%22%23505562%22%2F%3E%0A%3Cpath%20d%3D%22M4.93126%2014.1571L6.78106%203.71471H10.1375C11.1917%203.71471%2011.9824%203.98323%2012.5095%204.52027C13.0465%205.04736%2013.315%205.73358%2013.315%206.57892C13.315%207.44414%2013.0714%208.15522%2012.5841%208.71215C12.1067%209.25913%2011.4553%209.63705%2010.6298%209.8459L12.0619%2014.1571H10.3315L9.03364%2010.0249H7.24351L6.51254%2014.1571H4.93126ZM7.49711%208.59281H9.24248C9.99832%208.59281%2010.5901%208.42374%2011.0177%208.08561C11.4553%207.73753%2011.6741%207.26513%2011.6741%206.66842C11.6741%206.19106%2011.5249%205.81811%2011.2265%205.54959C10.9282%205.27113%2010.4558%205.1319%209.80936%205.1319H8.10874L7.49711%208.59281Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E%0A">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="io.camunda:http-json:1" />
@@ -373,6 +355,16 @@
       <bpmn:incoming>Flow_1blc89d</bpmn:incoming>
       <bpmn:errorEventDefinition id="ErrorEventDefinition_06iv34j" errorRef="Error_0f7qhm5" />
     </bpmn:endEvent>
+    <bpmn:callActivity id="createCluster" name="Create cluster">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="Process_cloudRunJob" propagateAllChildVariables="false" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;make use-kube ; make kube-gke&#34;" target="commands" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0sran4o</bpmn:incoming>
+      <bpmn:outgoing>Flow_0kmo49r</bpmn:outgoing>
+    </bpmn:callActivity>
   </bpmn:process>
   <bpmn:error id="Error_1dtaw4g" name="Invalid Access Token" errorCode="invalidToken" />
   <bpmn:error id="Error_08dmban" name="Error_404" errorCode="404" />
@@ -391,9 +383,6 @@
       <bpmndi:BPMNShape id="Activity_03k5iyt_di" bpmnElement="Activity_1tligug">
         <dc:Bounds x="250" y="178" width="100" height="80" />
         <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0an1iuk_di" bpmnElement="createCluster">
-        <dc:Bounds x="560" y="178" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1seypsu_di" bpmnElement="Activity_0c9jejp">
         <dc:Bounds x="400" y="178" width="100" height="80" />
@@ -434,6 +423,9 @@
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1123" y="345" width="56" height="27" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1bt5a43_di" bpmnElement="createCluster">
+        <dc:Bounds x="560" y="178" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1vb03et_di" bpmnElement="Event_1vuzq1f">
         <dc:Bounds x="482" y="200" width="36" height="36" />
