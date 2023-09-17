@@ -1,0 +1,221 @@
+{
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.2.0",
+  "exporter": {
+    "name": "Camunda Web Modeler",
+    "version": "bf0082d"
+  },
+  "schemaVersion": 10,
+  "components": [
+    {
+      "text": "# Create Google Cluster Start Form",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_0erbli3",
+        "columns": null
+      },
+      "id": "Field_1g0llvv"
+    },
+    {
+      "text": "## Authentication",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_1jah72q",
+        "columns": null
+      },
+      "id": "Field_0sgnb5p"
+    },
+    {
+      "values": [
+        {
+          "label": "Access / Refresh Token",
+          "value": "accessToken"
+        },
+        {
+          "label": "Authorization Code",
+          "value": "authCode"
+        }
+      ],
+      "label": "Type of Authentication",
+      "type": "select",
+      "layout": {
+        "row": "Row_04dvbl2",
+        "columns": null
+      },
+      "id": "Field_1s0vwfu",
+      "key": "authType",
+      "defaultValue": "accessToken",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "text": "#### Click <a target=\"_gcpSignin\" href=\"https://accounts.google.com/o/oauth2/v2/auth?client_id=291005901394-60d88q0qhsopc4rmj817oldolqer8v1c.apps.googleusercontent.com&redirect_uri=urn:ietf:wg:oauth:2.0:oob&response_type=code&scope=https://www.googleapis.com/auth/cloud-platform\">HERE</a> to sign into Google\nThis app will make API requests to Google Cloud on your behalf. After you sign in, choose **Allow**. Finally, copy and paste the **authorization code** below.\n",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_1uq0oz8",
+        "columns": null
+      },
+      "id": "Field_12k47q4",
+      "conditional": {
+        "hide": "=authType != \"authCode\""
+      }
+    },
+    {
+      "label": "Authorization Code",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1v27xno",
+        "columns": null
+      },
+      "id": "Field_065cfyb",
+      "key": "authorizationCode",
+      "description": "Copy and paste Authorization Code Here",
+      "conditional": {
+        "hide": "=authType != \"authCode\""
+      },
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Access Token",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1lgewya",
+        "columns": null
+      },
+      "id": "Field_0tjhgp2",
+      "key": "accessToken",
+      "defaultValue": "secrets.GOOGLE_ACCESS_TOKEN",
+      "validate": {
+        "required": true
+      },
+      "description": "The access token linked to your Google account",
+      "conditional": {
+        "hide": "=authType != \"accessToken\""
+      }
+    },
+    {
+      "label": "Refresh Token",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0bfy04z",
+        "columns": null
+      },
+      "id": "Field_0uxu86c",
+      "key": "refreshToken",
+      "defaultValue": "secrets.GOOGLE_REFRESH_TOKEN",
+      "validate": {
+        "required": true
+      },
+      "description": "The refresh token to stay authenticated longer",
+      "conditional": {
+        "hide": "=authType != \"accessToken\""
+      }
+    },
+    {
+      "text": "## Configuration",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_1aqcbdy",
+        "columns": null
+      },
+      "id": "Field_17g5991"
+    },
+    {
+      "label": "Project ID",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1rqlgz7",
+        "columns": null
+      },
+      "id": "Field_0u5xkp4",
+      "key": "projectId",
+      "defaultValue": "camunda-researchanddevelopment",
+      "description": "The Google projectId in which you want to create your cluster",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Cluster ID",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0vyp79j",
+        "columns": null
+      },
+      "id": "Field_0pwn0mk",
+      "key": "clusterId",
+      "description": "The name of your cluster. Should not contain any space.",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Cluster Description",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1g1nuj8",
+        "columns": null
+      },
+      "id": "Field_0nigy0w",
+      "key": "clusterDescription",
+      "defaultValue": "One click C8SM Environment",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "Central US",
+          "value": "us-central1-a"
+        },
+        {
+          "label": "Southwest Europe",
+          "value": "europe-southwest1-a"
+        }
+      ],
+      "label": "Zone",
+      "type": "select",
+      "layout": {
+        "row": "Row_0oofz41",
+        "columns": null
+      },
+      "id": "Field_1g6gk77",
+      "key": "zoneId",
+      "description": "Google Zone",
+      "validate": {
+        "required": true
+      },
+      "defaultValue": "us-central1-a"
+    },
+    {
+      "values": [
+        {
+          "label": " n2-standard-16",
+          "value": " n2-standard-16"
+        }
+      ],
+      "label": "Machine Type",
+      "type": "select",
+      "layout": {
+        "row": "Row_0oofz41",
+        "columns": null
+      },
+      "id": "Field_1woc8g1",
+      "key": "machineType",
+      "defaultValue": " n1-standard-16",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "Form_02o8n4l"
+}
