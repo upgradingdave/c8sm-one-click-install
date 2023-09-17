@@ -259,7 +259,7 @@
     <bpmn:sequenceFlow id="Flow_0qn0g84" sourceRef="Activity_09owpkz" targetRef="Activity_02qla2b" />
     <bpmn:scriptTask id="Activity_09owpkz" name="Set Job Id">
       <bpmn:extensionElements>
-        <zeebe:script expression="=if is defined(google.jobId) &#10;then google.jobId &#10;else lower case(&#34;c8sm-&#34; + replace(replace(replace (replace(string(now()), &#34;@Etc/UTC&#34;, &#34;&#34;), &#34;@gmt&#34;, &#34;&#34;), &#34;:&#34;, &#34;&#34;), &#34;\.&#34;, &#34;&#34;))" resultVariable="jobId" />
+        <zeebe:script expression="=if is defined(google.jobId) &#10;then google.jobId &#10;else {&#10;  n: now(),&#10;  r: decimal(random number() * 10000, 0),&#10;  y: string(n.year),&#10;  m: string(n.month),&#10;  d: string(n.day),&#10;  h: string(n.hour),&#10;  mi: string(n.minute),&#10;  s: string(n.second),&#10;  result: &#34;c8sm&#34; + y + m + d + h + mi + s + string(r)&#10;}.result" resultVariable="jobId" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_08fbhgb</bpmn:incoming>
       <bpmn:outgoing>Flow_0qn0g84</bpmn:outgoing>

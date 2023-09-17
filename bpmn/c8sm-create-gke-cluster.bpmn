@@ -227,8 +227,8 @@
     <bpmn:startEvent id="StartEvent_1" name="Start">
       <bpmn:extensionElements>
         <zeebe:ioMapping>
-          <zeebe:output source="=if is defined(google.projectId) then google.projectId else &#34;camunda-researchanddevelopment&#34;" target="google.projectId" />
-          <zeebe:output source="=if is defined(google.clientId) then google.clientId else &#34;291005901394-60d88q0qhsopc4rmj817oldolqer8v1c.apps.googleusercontent.com&#34;" target="google.clientId" />
+          <zeebe:output source="=if is defined(google.projectId) then google.projectId else &#34;{{secrets.GCP_PROJECT_ID}}&#34;" target="google.projectId" />
+          <zeebe:output source="=if is defined(google.clientId) then google.clientId else &#34;{{secrets.GCP_OAUTH2_CLIENT_ID}}&#34;" target="google.clientId" />
           <zeebe:output source="=if is defined(zoneId) then zoneId else &#34;us-central1-a&#34;" target="google.zoneId" />
           <zeebe:output source="=if is defined(accessToken) then accessToken else null" target="google.accessToken" />
           <zeebe:output source="=if is defined(refreshToken) then refreshToken else null" target="google.refreshToken" />

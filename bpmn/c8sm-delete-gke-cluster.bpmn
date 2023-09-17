@@ -221,7 +221,7 @@
           <zeebe:property name="publicAccess" value="true" />
         </zeebe:properties>
         <zeebe:ioMapping>
-          <zeebe:output source="=if is defined(clientId) then clientId else &#34;291005901394-60d88q0qhsopc4rmj817oldolqer8v1c.apps.googleusercontent.com&#34;" target="google.clientId" />
+          <zeebe:output source="=if is defined(clientId) then clientId else &#34;{{secrets.GCP_OAUTH2_CLIENT_ID}}&#34;" target="google.clientId" />
           <zeebe:output source="=if is defined(projectId) then projectId else &#34;{{secrets.GCP_PROJECT_ID}}&#34;" target="google.projectId" />
           <zeebe:output source="=if is defined(zoneId) then zoneId else &#34;us-central-a&#34;" target="google.zoneId" />
           <zeebe:output source="=if is defined(accessToken) then accessToken else null" target="google.accessToken" />
